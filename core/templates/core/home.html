@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}FitTrackR · Suivi et progression fitness{% endblock %}
+
+{% block page_header %}
+<section class="page-hero home-hero">
+    <p class="eyebrow">FitTrackR</p>
+    <h1 class="page-title">Ton copilote pour progresser sereinement</h1>
+    <p class="lead">
+        Planifie tes séances, mesure ta charge et décroche des badges qui te poussent à continuer, sans te perdre
+        dans les feuilles de calcul.
+    </p>
+    <div class="hero-actions">
+        <a href="#fittrackr-apercu" class="btn primary">Découvrir FitTrackR</a>
+        <a href="#bloc-semaine" class="btn ghost">Voir le plan en action</a>
+    </div>
+    <div class="hero-glance">
+        <span class="hero-chip"><span class="dot positive"></span>Programme Force / Volume · Semaine 3</span>
+        <span class="hero-chip"><span class="dot positive"></span>Charge hebdo +12% vs dernière semaine</span>
+        <span class="hero-chip"><span class="dot neutral"></span>Badge Discipline débloqué</span>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card" id="fittrackr-apercu">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Pourquoi l'utiliser</p>
+            <h2>Une vue claire de ta progression</h2>
+        </div>
+        <span class="pill">Aperçu live</span>
+    </div>
+    <p class="muted">
+        FitTrackR rassemble programmes, suivi d'entraînement, badges et tableaux de bord dans une interface unique.
+        Chaque session mise à jour alimente tes stats et ajuste les prochains cycles pour rester aligné avec tes
+        objectifs.
+    </p>
+
+    <div class="stat-grid">
+        <div class="stat">
+            <div class="stat-label">Volume hebdo</div>
+            <div class="stat-value">4 320 kg</div>
+            <div class="stat-trend up">+12%</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Sessions</div>
+            <div class="stat-value">4 / semaine</div>
+            <div class="stat-trend up">RPE maîtrisé</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Habitudes</div>
+            <div class="stat-value">7 jours</div>
+            <div class="stat-trend up">Hydratation, sommeil</div>
+        </div>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>Agenda intelligent</h4>
+            <p class="muted">Tes séances se calent automatiquement selon tes disponibilités et ton état de forme.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Rappels adaptés à tes horaires</span></li>
+                <li><span class="check-dot"></span><span>Charge ajustée si tu rates une séance</span></li>
+                <li><span class="check-dot"></span><span>Récupération intégrée</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Tableaux de bord</h4>
+            <p class="muted">Visualise volume, intensité, RPE et évolution de tes lifts en un coup d'œil.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Tendance hebdo et mensuelle</span></li>
+                <li><span class="check-dot"></span><span>Alertes de surcharge</span></li>
+                <li><span class="check-dot"></span><span>Export pour ton coach</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Badges & motivation</h4>
+            <p class="muted">Des défis courts pour rester engagé et voir ta constance récompensée.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Séries de semaines complètes</span></li>
+                <li><span class="check-dot"></span><span>Record perso suivi automatiquement</span></li>
+                <li><span class="check-dot"></span><span>Partage avec tes partenaires</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card" id="bloc-semaine">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Bloc en cours</p>
+            <h3>Plan Force + Volume prêt à suivre</h3>
+        </div>
+        <span class="pill">6 semaines</span>
+    </div>
+    <div class="split-grid">
+        <div class="split-panel">
+            <h4>Semaine 3 : stabilité et relance</h4>
+            <p class="muted">On consolide la technique tout en remontant la charge sur les mouvements clés.</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-day">Lun</div>
+                    <div>
+                        <div class="timeline-title">Force bas du corps</div>
+                        <p class="timeline-meta">Squat 5x5 · Soulevé de terre 3x4 · Core</p>
+                    </div>
+                    <span class="pill small">45 min</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-day">Mer</div>
+                    <div>
+                        <div class="timeline-title">Volume haut du corps</div>
+                        <p class="timeline-meta">Développé couché 4x8 · Tractions · Dips</p>
+                    </div>
+                    <span class="pill small">50 min</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-day">Ven</div>
+                    <div>
+                        <div class="timeline-title">Puissance</div>
+                        <p class="timeline-meta">Olympic lifts légers + sprints courts</p>
+                    </div>
+                    <span class="pill small">35 min</span>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-day">Sam</div>
+                    <div>
+                        <div class="timeline-title">Full body</div>
+                        <p class="timeline-meta">Circuit technique + mobilité pour récupérer</p>
+                    </div>
+                    <span class="pill small">40 min</span>
+                </div>
+            </div>
+        </div>
+        <div class="split-panel">
+            <h4>Coaching et feedback</h4>
+            <p class="muted">FitTrackR ajuste ton plan en fonction de ton ressenti et des charges réellement complétées.</p>
+            <div class="stat-grid">
+                <div class="stat">
+                    <div class="stat-label">RPE moyen</div>
+                    <div class="stat-value">7.3</div>
+                    <div class="stat-trend up">Zone optimale</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Surcharge progressive</div>
+                    <div class="stat-value">+3%</div>
+                    <div class="stat-trend up">Ciblé</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Récupération</div>
+                    <div class="stat-value">OK</div>
+                    <div class="stat-trend up">Sommeil 7h15</div>
+                </div>
+            </div>
+            <div class="badge-row">
+                <div class="badge-card">
+                    <strong>Discipline</strong>
+                    <span class="muted">7 check-ins d'affilée</span>
+                </div>
+                <div class="badge-card">
+                    <strong>Progressif</strong>
+                    <span class="muted">Charges +12% en 4 semaines</span>
+                </div>
+                <div class="badge-card">
+                    <strong>Technique</strong>
+                    <span class="muted">0 rep ratée cette semaine</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card soft">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Habitudes</p>
+            <h3>Des routines simples pour rester régulier</h3>
+        </div>
+        <span class="pill">15 min/jour</span>
+    </div>
+    <p class="muted">
+        Valide tes petites actions quotidiennes : mobilité, hydratation, sommeil. FitTrackR te rappelle ce qu'il
+        reste à faire pour finir la journée proprement.
+    </p>
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>Routine express</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>5 minutes de mobilité matin</span></li>
+                <li><span class="check-dot"></span><span>Hydratation : 2L validés</span></li>
+                <li><span class="check-dot"></span><span>Respiration / cohérence cardiaque</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Suivi récup'</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Sommeil moyen 7h15</span></li>
+                <li><span class="check-dot"></span><span>Variabilité cardiaque stable</span></li>
+                <li><span class="check-dot"></span><span>Plan dodo ajusté si séance tardive</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>À partager</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Résumés hebdo envoyés au coach</span></li>
+                <li><span class="check-dot"></span><span>Badges débloqués visibles par tes potes</span></li>
+                <li><span class="check-dot"></span><span>Invites directes aux prochaines séances</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="card soft">
+    <h3>Prêt à démarrer ?</h3>
+    <p class="muted">Choisis un objectif et FitTrackR génère ton bloc et tes rappels.</p>
+    <ul class="checklist">
+        <li><span class="check-dot"></span><span>Sélectionne Force, Hypertrophie ou Cardio</span></li>
+        <li><span class="check-dot"></span><span>Indique tes jours dispo et ton matériel</span></li>
+        <li><span class="check-dot"></span><span>Laisse FitTrackR ajuster les charges</span></li>
+    </ul>
+    <a href="signup.html" class="btn full primary" style="margin-top: 14px;">Créer mon plan gratuit</a>
+</div>
+
+<div class="card">
+    <h3>Focus de la semaine</h3>
+    <div class="stat-grid">
+        <div class="stat">
+            <div class="stat-label">Lift à tester</div>
+            <div class="stat-value">Squat</div>
+            <div class="stat-trend up">RM samedi</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Point d'attention</div>
+            <div class="stat-value">Sommeil</div>
+            <div class="stat-trend up">+30 min/nuit</div>
+        </div>
+    </div>
+    <div class="badge-row" style="margin-top: 12px;">
+        <div class="badge-card">
+            <strong>Récup</strong>
+            <span class="muted">Étirements 4/5</span>
+        </div>
+        <div class="badge-card">
+            <strong>Hydratation</strong>
+            <span class="muted">12 verres / jour</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

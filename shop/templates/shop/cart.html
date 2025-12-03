@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Mon panier</h2>
+
+{% if items %}
+    <ul>
+    {% for item in items %}
+        <li>
+            {{ item.product.name }} — {{ item.quantity }} × {{ item.product.price }} €  
+            = <b>{{ item.total_price }}</b> €
+        </li>
+    {% endfor %}
+    </ul>
+
+    <h3>Total : {{ total }} €</h3>
+
+    <a href="{% url 'checkout' %}" class="btn btn-primary">Valider la commande</a>
+{% else %}
+    <p>Votre panier est vide.</p>
+{% endif %}
+
+{% endblock %}

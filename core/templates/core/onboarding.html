@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero onboarding-hero">
+  <p class="eyebrow">Onboarding</p>
+  <h1 class="page-title">Personnalise ton programme</h1>
+  <p class="lead">On prend quelques infos pour adapter tes séances, ton suivi et tes recommandations.</p>
+  <div class="onboarding-chip-row">
+    <span class="hero-chip done"><span class="dot positive"></span> Profil</span>
+    <span class="hero-chip neutral"><span class="dot neutral"></span> Objectif</span>
+    <span class="hero-chip neutral"><span class="dot neutral"></span> Prêt à démarrer</span>
+  </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="onboarding-wrapper">
+  <div class="card onboarding-card">
+    <div class="card-head">
+      <h2>Ton profil forme</h2>
+      <span class="pill">2 min</span>
+    </div>
+    {% if profile_done and not request.GET.edit %}
+      <div class="profile-summary">
+        <p class="eyebrow">Tes infos</p>
+        <ul class="profile-list">
+          <li><strong>Âge :</strong> {{ user.age|default:"Non renseigné" }}</li>
+          <li><strong>Poids :</strong> {{ user.weight|default:"Non renseigné" }} kg</li>
+          <li><strong>Taille :</strong> {{ user.size|default:"Non renseigné" }} cm</li>
+        </ul>
+        <div class="onboarding-actions">
+          <a class="btn ghost" href="{% url 'home' %}">Retour</a>
+          <a class="btn primary" href="?edit=1">Modifier</a>
+        </div>
+      </div>
+    {% else %}
+      <form method="post" class="onboarding-form">
+        {% csrf_token %}
+
+        <div class="split-grid">
+          <div class="field">
+            <label for="{{ form.age.id_for_label }}">Âge</label><br>
+            {{ form.age }}
+            {{ form.age.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.weight.id_for_label }}">Poids (kg)</label><br>
+            {{ form.weight }}
+            {{ form.weight.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.size.id_for_label }}">Taille (cm)</label><br>
+            {{ form.size }}
+            {{ form.size.errors }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="goal">Ton objectif principal</label><br>
+          <select name="goal" id="goal" class="control">
+            <option value="">Choisis…</option>
+            <option {% if request.POST.goal == "Perdre du poids" %}selected{% endif %}>Perdre du poids</option>
+            <option {% if request.POST.goal == "Prendre du muscle" %}selected{% endif %}>Prendre du muscle</option>
+            <option {% if request.POST.goal == "Cardio / endurance" %}selected{% endif %}>Cardio / endurance</option>
+            <option {% if request.POST.goal == "Autre" %}selected{% endif %}>Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="weight_goal">Objectif poids (kg) (optionnel)</label><br>
+          {{ form.weight_goal }}
+          {{ form.weight_goal.errors }}
+        </div>
+
+        <div class="onboarding-actions">
+          <a class="btn ghost" href="{% url 'home' %}">Plus tard</a>
+          <button type="submit" class="btn primary">Continuer</button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

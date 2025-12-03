@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero onboarding-hero">
+  <p class="eyebrow">Bienvenue</p>
+  <h1 class="page-title">Crée ton compte</h1>
+  <p class="lead">Rejoins FitTrackr et lance ton suivi d’entraînement personnalisé.</p>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="card auth-card">
+    <div class="card-head">
+      <h2>Inscription</h2>
+    </div>
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">
+          {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label><br>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.email.id_for_label }}">Email</label><br>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password1.id_for_label }}">Mot de passe</label><br>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password2.id_for_label }}">Confirmation</label><br>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+
+      <div class="auth-actions">
+        <a class="btn ghost" href="{% url 'login' %}">Déjà un compte ?</a>
+        <button type="submit" class="btn primary">Créer mon compte</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

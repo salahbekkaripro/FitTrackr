@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero onboarding-hero">
+  <p class="eyebrow">Connexion</p>
+  <h1 class="page-title">Content de te revoir</h1>
+  <p class="lead">Accède à ton suivi, tes objectifs et tes programmes.</p>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="card auth-card">
+    <div class="card-head">
+      <h2>Connexion</h2>
+    </div>
+    <form method="post" action="{% url 'connexion' %}" class="auth-form">
+      {% csrf_token %}
+
+      <div class="field">
+        <label for="username">Nom d'utilisateur</label><br>
+        <input type="text" name="username" required class="control">
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label><br>
+        <input type="password" name="password" required class="control">
+      </div>
+
+      <div class="auth-actions">
+        <a class="btn ghost" href="{% url 'signup' %}">Créer un compte</a>
+        <button type="submit" class="btn primary">Se connecter</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

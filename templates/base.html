@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}FitTrackr{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body data-onboarding-incomplete="{% if user.is_authenticated and not request.session.onboarding_completed %}1{% else %}0{% endif %}">
+    <div class="layout">
+        <header class="site-header">
+            <div class="brand">
+                <span class="brand-mark">FT</span>
+                <div>
+                    <div class="brand-name">FitTrackr</div>
+                    <div class="brand-tag">Suivi d'entraînement</div>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                {% block nav %}
+                <a href="{% url 'cart' %}" class="link">Panier</a>
+                <a href="#" class="link">Sessions</a>
+                <a href="#" class="link">Profil</a>
+                {% endblock %}
+            </nav>
+
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn ghost logout-btn">
+                        <span class="logout-label">Se déconnecter</span>
+                        <span class="logout-spinner" aria-hidden="true"></span>
+                    </button>
+                </form>
+                {% else %}
+                <!-- 🚀 Correction ici : 'login' → 'connexion' -->
+                <a class="btn ghost" href="{% url 'connexion' %}">Se connecter</a>
+                <a class="btn primary" href="{% url 'signup' %}">Créer un compte</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main class="page">
+            {% block page_header %}
+            <section class="page-hero">
+                <p class="eyebrow">Prêt à bouger</p>
+                <h1 class="page-title">Un socle commun pour l'équipe</h1>
+                <p class="lead">Utilisez ce layout comme base : sections, cartes, boutons et grilles sont déjà prêts.</p>
+                <div class="hero-actions">
+                    <button class="btn primary">Action principale</button>
+                    <button class="btn ghost">Action secondaire</button>
+                </div>
+            </section>
+            {% endblock %}
+
+            <section class="page-grid">
+                <div class="content">
+                    {% block content %}
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Section de contenu</h2>
+                            <span class="pill">Exemple</span>
+                        </div>
+                        <p class="muted">Remplacez ce contenu par vos vues. La classe <code>card</code> gère l'espacement, les coins et l'ombre.</p>
+                        <div class="stat-grid">
+                            <div class="stat">
+                                <div class="stat-label">Volume</div>
+                                <div class="stat-value">12k</div>
+                                <div class="stat-trend up">+8%</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Temps</div>
+                                <div class="stat-value">6h30</div>
+                                <div class="stat-trend down">-2%</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Sessions</div>
+                                <div class="stat-value">18</div>
+                                <div class="stat-trend up">+3</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endblock %}
+                </div>
+
+                <aside class="sidebar">
+                    {% block sidebar %}
+                    <div class="card soft">
+                        <h3>Bloc latéral</h3>
+                        <p class="muted">Utilisez le <code>sidebar</code> pour des raccourcis, des filtres ou un résumé.</p>
+                        <button class="btn full ghost">Bouton latéral</button>
+                    </div>
+                    {% endblock %}
+                </aside>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p class="muted">Construit ensemble · FitTrackr · {% now "Y" %}</p>
+        </footer>
+    </div>
+
+    <div class="logout-overlay" aria-hidden="true">
+        <div class="panel">
+            <div class="big-spinner"></div>
+            <h3 class="title">Déconnexion</h3>
+            <p class="subtitle">Merci pour ta visite, à bientôt.</p>
+        </div>
+    </div>
+
+    <div class="onboarding-overlay" id="onboarding-reminder" aria-hidden="true">
+        <div class="panel">
+            <button type="button" class="close-btn" data-onboarding-close aria-label="Fermer">×</button>
+            <p class="eyebrow">Onboarding</p>
+            <h3 class="title">Complète ton profil</h3>
+            <p class="subtitle">Renseigne tes infos pour personnaliser tes séances et activer toutes les fonctionnalités.</p>
+            <div class="actions">
+                <a class="btn primary" href="{% url 'onboarding' %}" data-onboarding-go>Compléter maintenant</a>
+                <button type="button" class="btn ghost" data-onboarding-close>Plus tard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/logout.js' %}"></script>
+    <script src="{% static 'js/onboarding-reminder.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+
