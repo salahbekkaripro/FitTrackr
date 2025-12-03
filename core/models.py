@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 
 
 
@@ -13,9 +14,36 @@ class Subscription(models.Model):
     code = models.CharField(max_length=20, unique=True)
     price_monthly = models.DecimalField(max_digits=6, decimal_places=2)
     level_rank = models.IntegerField()
+    commitment_months = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
+
+
+class SubscriptionEngagement(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="subscription_engagements",
+    )
+    subscription = models.ForeignKey(
+        Subscription,
+        on_delete=models.CASCADE,
+        related_name="engagements",
+    )
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+    commitment_months = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ("-start_date",)
+
+    @property
+    def is_active(self):
+        return self.commitment_months > 0 and self.end_date >= timezone.now().date()
+
+    def __str__(self):
+        return f"{self.user.username} · {self.subscription.code}"
 
 
 # =========================================================

@@ -34,3 +34,21 @@ class OnboardingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for name in ["age", "weight", "size"]:
             self.fields[name].required = False
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "age", "weight", "size"]
+        widgets = {
+            "username": forms.TextInput(attrs={"class": "control"}),
+            "email": forms.EmailInput(attrs={"class": "control"}),
+            "age": forms.NumberInput(attrs={"class": "control"}),
+            "weight": forms.NumberInput(attrs={"class": "control"}),
+            "size": forms.NumberInput(attrs={"class": "control"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ["age", "weight", "size"]:
+            self.fields[name].required = False

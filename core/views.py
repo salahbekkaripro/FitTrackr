@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
+from datetime import timedelta, date
+from calendar import monthrange
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.utils import timezone
 
-from .form import CustomerUserCreationForm, OnboardingForm
-from .models import Goal
+from .form import CustomerUserCreationForm, OnboardingForm, ProfileForm
+from .models import Goal, Subscription, SubscriptionEngagement
 
 def home(request):
     """Page d'accueil FitTrackR."""
@@ -74,6 +79,134 @@ def onboarding(request):
     )
 
 
+@login_required
+def subscriptions_view(request):
+    user = request.user
+    today = timezone.now().date()
+
+    def compute_end_date(start_date: date, months: int) -> date:
+        """Retourne la date de fin en ajoutant un nombre de mois à la date de départ."""
+        if not months:
+            return start_date
+        month_index = start_date.month - 1 + months
+        year = start_date.year + month_index // 12
+        month = month_index % 12 + 1
+        day = min(start_date.day, monthrange(year, month)[1])
+        return date(year, month, day)
+
+    subscriptions = Subscription.objects.order_by("level_rank", "price_monthly")
+    active_engagement = (
+        SubscriptionEngagement.objects.filter(
+            user=user,
+            end_date__gte=today,
+            commitment_months__gt=0,
+        )
+        .select_related("subscription")
+        .order_by("-end_date")
+        .first()
+    )
+
+    current_subscription = user.subscription or (
+        active_engagement.subscription if active_engagement else None
+    )
+
+    error_message = None
+    info_message = None
+
+    if request.method == "POST":
+        selected_id = request.POST.get("subscription_id")
+        if not selected_id:
+            error_message = "Choisis un abonnement pour continuer."
+        else:
+            chosen = get_object_or_404(Subscription, pk=selected_id)
+            is_same_subscription = (
+                current_subscription.id == chosen.id if current_subscription else False
+            )
+
+            if active_engagement and not is_same_subscription:
+                active_price = active_engagement.subscription.price_monthly
+                if chosen.price_monthly <= active_price:
+                    error_message = (
+                        f"Tu es engagé sur {active_engagement.subscription.name} "
+                        f"jusqu'au {active_engagement.end_date.strftime('%d/%m/%Y')}. "
+                        "Tu peux changer maintenant uniquement vers une offre plus chère."
+                    )
+                else:
+                    user.subscription = chosen
+                    user.save(update_fields=["subscription"])
+
+                    months = chosen.commitment_months or 0
+                    end_date = compute_end_date(today, months)
+
+                    SubscriptionEngagement.objects.create(
+                        user=user,
+                        subscription=chosen,
+                        end_date=end_date,
+                        commitment_months=months,
+                    )
+
+                    query = f"?changed=1&plan={chosen.code}"
+                    return redirect(reverse("subscriptions") + query)
+            elif is_same_subscription:
+                info_message = "Tu es déjà sur cet abonnement."
+            else:
+                user.subscription = chosen
+                user.save(update_fields=["subscription"])
+
+                months = chosen.commitment_months or 0
+                end_date = compute_end_date(today, months)
+
+                SubscriptionEngagement.objects.create(
+                    user=user,
+                    subscription=chosen,
+                    end_date=end_date,
+                    commitment_months=months,
+                )
+
+                query = f"?changed=1&plan={chosen.code}"
+                return redirect(reverse("subscriptions") + query)
+
+    subscription_changed = request.GET.get("changed") == "1"
+    selected_code = request.GET.get("plan")
+
+    return render(
+        request,
+        "core/subscriptions.html",
+        {
+            "subscriptions": subscriptions,
+            "active_engagement": active_engagement,
+            "error_message": error_message,
+            "info_message": info_message,
+            "subscription_changed": subscription_changed,
+            "selected_code": selected_code,
+            "current_subscription": current_subscription,
+        },
+    )
+
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+    updated = request.GET.get("updated") == "1"
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("profile") + "?updated=1")
+    else:
+        form = ProfileForm(instance=user)
+
+    return render(
+        request,
+        "core/profile.html",
+        {
+            "form": form,
+            "user_profile": user,
+            "updated": updated,
+        },
+    )
 
 
 @login_required

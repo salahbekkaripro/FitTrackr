@@ -31,10 +31,11 @@ urlpatterns = [
     path('login/', views.connexion, name='connexion'),
     path('logout/', views.logout_view, name='logout'),
     path('onboarding/', views.onboarding, name='onboarding'),
+    path('subscriptions/', views.subscriptions_view, name='subscriptions'),
+    path('profile/', views.profile_view, name='profile'),
     path('shop/', include('shop.urls')),
 ]
 
 # Serve media files
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

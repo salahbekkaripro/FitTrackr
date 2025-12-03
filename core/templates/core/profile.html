@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}FitTrackR · Profil{% endblock %}
+
+{% block page_header %}
+<section class="page-hero onboarding-hero">
+  <p class="eyebrow">Profil</p>
+  <h1 class="page-title">Tes informations</h1>
+  <p class="lead">Mets à jour tes coordonnées et ton profil forme.</p>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <p class="eyebrow">Aperçu</p>
+        <h2>Résumé de ton compte</h2>
+      </div>
+      {% if user_profile.subscription %}
+        <span class="pill">{{ user_profile.subscription.name }}</span>
+      {% else %}
+        <span class="pill">Sans abonnement</span>
+      {% endif %}
+    </div>
+    <div class="profile-grid">
+      <div>
+        <p class="muted">Nom d'utilisateur</p>
+        <p><strong>{{ user_profile.username }}</strong></p>
+      </div>
+      <div>
+        <p class="muted">Email</p>
+        <p><strong>{{ user_profile.email }}</strong></p>
+      </div>
+      <div>
+        <p class="muted">Âge</p>
+        <p><strong>{{ user_profile.age|default:"Non renseigné" }}</strong></p>
+      </div>
+      <div>
+        <p class="muted">Poids</p>
+        <p>
+          <strong>
+            {% if user_profile.weight %}{{ user_profile.weight }} kg{% else %}Non renseigné{% endif %}
+          </strong>
+        </p>
+      </div>
+      <div>
+        <p class="muted">Taille</p>
+        <p>
+          <strong>
+            {% if user_profile.size %}{{ user_profile.size }} cm{% else %}Non renseigné{% endif %}
+          </strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <p class="eyebrow">Mettre à jour</p>
+        <h2>Modifier tes informations</h2>
+      </div>
+      <span class="pill small">Sauvegarde instantanée</span>
+    </div>
+
+    <form method="post" class="profile-form">
+      {% csrf_token %}
+      <div class="split-grid">
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label><br>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email</label><br>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.age.id_for_label }}">Âge</label><br>
+          {{ form.age }}
+          {{ form.age.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.weight.id_for_label }}">Poids (kg)</label><br>
+          {{ form.weight }}
+          {{ form.weight.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.size.id_for_label }}">Taille (cm)</label><br>
+          {{ form.size }}
+          {{ form.size.errors }}
+        </div>
+      </div>
+      <div class="profile-actions">
+        <a class="btn ghost" href="{% url 'home' %}">Retour</a>
+        <button type="submit" class="btn primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-overlay" id="profile-toast" data-visible="{{ updated|yesno:'1,0' }}">
+  <div class="toast">
+    <div class="toast-title">Profil mis à jour</div>
+    <div class="toast-body">Tes informations ont été enregistrées.</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const overlay = document.getElementById("profile-toast");
+    if (!overlay || overlay.dataset.visible !== "1") return;
+    overlay.classList.add("is-visible");
+    setTimeout(() => overlay.classList.remove("is-visible"), 5000);
+  })();
+</script>
+{% endblock %}

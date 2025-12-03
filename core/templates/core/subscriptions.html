@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}FitTrackR · Abonnements{% endblock %}
+
+{% block page_header %}
+<section class="page-hero onboarding-hero">
+  <p class="eyebrow">Abonnements</p>
+  <h1 class="page-title">Choisis l'offre qui te convient</h1>
+  <p class="lead">Garde la main sur ton engagement : si une période est en cours, on te bloque le changement et on te le dit clairement.</p>
+  <div class="onboarding-chip-row">
+    <span class="hero-chip neutral"><span class="dot neutral"></span> Comparer</span>
+    <span class="hero-chip neutral"><span class="dot neutral"></span> Engagement</span>
+    <span class="hero-chip neutral"><span class="dot neutral"></span> Confirmation</span>
+  </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="subscriptions-wrapper">
+  {% if active_engagement %}
+    <div class="alert warning">
+      <div>
+        <p class="eyebrow">Engagement en cours</p>
+        <strong>Bloqué jusqu'au {{ active_engagement.end_date|date:"d/m/Y" }}</strong>
+        <p class="muted">Tu es engagé sur {{ active_engagement.subscription.name }}. Les autres offres sont verrouillées tant que l'engagement n'est pas terminé.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if error_message %}
+    <div class="alert danger">{{ error_message }}</div>
+  {% endif %}
+
+  {% if info_message %}
+    <div class="alert info">{{ info_message }}</div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <p class="eyebrow">Offres FitTrackR</p>
+        <h2>Choisis ton abonnement</h2>
+      </div>
+      <span class="pill">Engagement contrôlé</span>
+    </div>
+
+    <form method="post" class="subscriptions-form">
+      {% csrf_token %}
+      <div class="plans-grid">
+        {% for subscription in subscriptions %}
+          <label class="plan-card {% if current_subscription and current_subscription.id == subscription.id %}current{% endif %} {% if active_engagement and active_engagement.subscription.id != subscription.id and subscription.price_monthly <= active_engagement.subscription.price_monthly %}locked{% endif %}">
+            <input
+              type="radio"
+              name="subscription_id"
+              value="{{ subscription.id }}"
+              {% if current_subscription and current_subscription.id == subscription.id %}checked{% endif %}
+              {% if active_engagement and active_engagement.subscription.id != subscription.id and subscription.price_monthly <= active_engagement.subscription.price_monthly %}disabled{% endif %}
+            />
+            <div class="plan-head">
+              <div>
+                <p class="eyebrow">{{ subscription.code }}</p>
+                <h3>{{ subscription.name }}</h3>
+              </div>
+              <div class="price-row">
+                <span class="price">{{ subscription.price_monthly }}€</span>
+                <span class="muted">/ mois</span>
+              </div>
+            </div>
+            <p class="muted">Niveau {{ subscription.level_rank }} · Accès complet aux suivis et programmes de ton palier.</p>
+            <div class="plan-meta">
+              <span class="pill small">{% if subscription.commitment_months %}Engagement {{ subscription.commitment_months }} mois{% else %}Sans engagement{% endif %}</span>
+              {% if active_engagement and active_engagement.subscription.id != subscription.id and subscription.price_monthly <= active_engagement.subscription.price_monthly %}
+                <span class="lock-note">Verrouillé pendant l'engagement en cours</span>
+              {% elif active_engagement and subscription.price_monthly > active_engagement.subscription.price_monthly %}
+                <span class="lock-note success">Upgrade possible immédiatement</span>
+              {% elif current_subscription and current_subscription.id == subscription.id %}
+                <span class="lock-note success">Abonnement actuel</span>
+              {% else %}
+                <span class="lock-note">Change librement</span>
+              {% endif %}
+            </div>
+            <ul class="plan-points">
+              <li><span class="dot positive"></span><span>Suivi détaillé des séances</span></li>
+              <li><span class="dot neutral"></span><span>Badges et rappels motivation</span></li>
+              <li><span class="dot neutral"></span><span>Support prioritaire selon ton niveau</span></li>
+            </ul>
+          </label>
+        {% empty %}
+          <p class="muted">Aucun abonnement configuré pour le moment.</p>
+        {% endfor %}
+      </div>
+
+      <div class="subscriptions-actions">
+        <a class="btn ghost" href="{% url 'home' %}">Retour</a>
+        <button type="submit" class="btn primary">Valider mon choix</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-overlay" id="subscription-toast" data-visible="{{ subscription_changed|yesno:'1,0' }}">
+  <div class="toast">
+    <div class="toast-title">Abonnement mis à jour</div>
+    <div class="toast-body">Ton offre {{ selected_code|default:"" }} est maintenant active.</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const overlay = document.getElementById("subscription-toast");
+    if (!overlay || overlay.dataset.visible !== "1") return;
+    overlay.classList.add("is-visible");
+    setTimeout(() => overlay.classList.remove("is-visible"), 5000);
+  })();
+</script>
+{% endblock %}

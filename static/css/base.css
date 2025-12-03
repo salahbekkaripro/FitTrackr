@@ -745,6 +745,211 @@ input[type="number"] {
     font-size: 0.85rem;
 }
 
+.subscriptions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.alert {
+    padding: 14px;
+    border-radius: var(--radius-m);
+    border: 1px solid var(--border);
+    background: var(--card-soft);
+}
+
+.alert.warning {
+    border-color: var(--accent);
+    background: rgba(242, 169, 59, 0.12);
+}
+
+.alert.danger {
+    border-color: #f27373;
+    background: rgba(242, 115, 115, 0.12);
+}
+
+.alert.info {
+    border-color: var(--accent-2);
+    background: rgba(109, 211, 194, 0.12);
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.plan-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: var(--radius-m);
+    border: 1px solid var(--border);
+    background: var(--card-soft);
+    cursor: pointer;
+    transition: transform 140ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+
+.plan-card input {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.plan-card.current {
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(242, 169, 59, 0.2);
+}
+
+.plan-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.plan-card.locked input {
+    cursor: not-allowed;
+}
+
+.plan-card.locked:hover {
+    transform: none;
+    border-color: var(--border);
+}
+
+.plan-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.price-row {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.plan-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.lock-note {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.lock-note.success {
+    color: var(--accent);
+}
+
+.plan-points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plan-points li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.subscriptions-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.toast-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+    z-index: 20;
+}
+
+.toast-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toast {
+    min-width: 280px;
+    padding: 18px 20px;
+    border-radius: var(--radius-l);
+    border: 1px solid var(--accent);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    text-align: center;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 200ms ease;
+}
+
+.toast-overlay.is-visible .toast {
+    transform: translateY(0) scale(1);
+}
+
+.toast-title {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.toast-body {
+    color: var(--muted);
+}
+
+.profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.profile-form .field {
+    margin-bottom: 8px;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+}
+
 @media (max-width: 960px) {
     .site-header {
         grid-template-columns: 1fr;
