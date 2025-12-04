@@ -1,12 +1,90 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>Adresse de livraison</h2>
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Paiement</p>
+    <h1 class="page-title">Valide ta commande en toute simplicité</h1>
+    <p class="lead">Adresse de livraison + paiement mock (aucune carte réelle n'est débitée).</p>
+</section>
+{% endblock %}
 
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="address" placeholder="Votre adresse complète" style="width:300px; padding:8px;" required>
-    <br><br>
-    <button type="submit" class="btn btn-success">Confirmer la commande</button>
-</form>
+{% block content %}
+<div class="card soft">
+    {% if errors %}
+    <div style="
+        margin-bottom:16px;
+        padding:12px 14px;
+        border-radius:10px;
+        background:rgba(255,86,86,0.08);
+        border:1px solid rgba(255,86,86,0.4);
+        color:#ffcdd2;
+    ">
+        <strong>Corrige ces points :</strong>
+        <ul style="margin:8px 0 0 18px; line-height:1.5;">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" style="display:grid; grid-template-columns:2fr 1fr; gap:20px;">
+        {% csrf_token %}
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="background:#0d1b2a; padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);">
+                <div style="font-weight:700; margin-bottom:10px;">Livraison</div>
+                <label style="display:flex; flex-direction:column; gap:8px; color:#cdd6f4;">
+                    <span>Adresse complète</span>
+                    <input type="text" name="address" placeholder="12 rue de l'Exemple, 75000 Paris" required
+                        style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:#fff;">
+                </label>
+            </div>
+
+            <div style="background:#0d1b2a; padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.04); display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="grid-column:1 / -1; font-weight:700; margin-bottom:4px;">Paiement (mock)</div>
+                <label style="display:flex; flex-direction:column; gap:8px; color:#cdd6f4; grid-column:1 / -1;">
+                    <span>Nom sur la carte</span>
+                    <input type="text" name="card_name" placeholder="Marie Dupont" required
+                        style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:#fff;">
+                </label>
+                <label style="display:flex; flex-direction:column; gap:8px; color:#cdd6f4; grid-column:1 / -1;">
+                    <span>Numéro de carte</span>
+                    <input type="text" name="card_number" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" required
+                        style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:#fff;">
+                </label>
+                <label style="display:flex; flex-direction:column; gap:8px; color:#cdd6f4;">
+                    <span>Expiration (MM/AA)</span>
+                    <input type="text" name="card_expiry" inputmode="numeric" placeholder="12/29" required
+                        style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:#fff;">
+                </label>
+                <label style="display:flex; flex-direction:column; gap:8px; color:#cdd6f4;">
+                    <span>CVC</span>
+                    <input type="text" name="card_cvc" inputmode="numeric" placeholder="123" required
+                        style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:#fff;">
+                </label>
+            </div>
+        </div>
+
+        <aside style="background:#0d1b2a; padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.04); display:flex; flex-direction:column; gap:12px;">
+            <div style="font-weight:700;">Récapitulatif</div>
+            <div style="display:flex; flex-direction:column; gap:10px; color:#cdd6f4;">
+                {% for item in items %}
+                <div style="display:flex; justify-content:space-between; gap:8px;">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span>{{ item.total_price }} €</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="height:1px; background:rgba(255,255,255,0.08); margin:6px 0;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; color:#fff;">
+                <span>Total</span>
+                <span style="font-size:18px;">{{ total }} €</span>
+            </div>
+            <button type="submit" class="btn primary" style="margin-top:6px; width:100%; font-weight:700;">
+                Confirmer et payer
+            </button>
+            <p class="muted" style="font-size:12px;">Simulation : aucune carte n'est réellement débitée.</p>
+        </aside>
+    </form>
+</div>
 {% endblock %}

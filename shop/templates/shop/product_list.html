@@ -1,51 +1,53 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2 style="margin:20px 0; color:white;">Boutique FitTrackr</h2>
-
-<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-top:30px;">
-
-    {% for product in products %}
-
-    <div style="
-        padding:20px;
-        border-radius:16px;
-        background:#0d1b2a;
-        box-shadow:0 4px 12px rgba(0,0,0,0.2);
-        color:white;
-    ">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" 
-             alt="{{ product.name }}" 
-             style="width:100%; height:200px; object-fit:cover; border-radius:12px;">
-        {% endif %}
-
-        <h3 style="margin-top:15px; font-size:18px; font-weight:600;">
-            {{ product.name }}
-        </h3>
-
-        <p style="margin:5px 0 10px; font-size:16px; color:#cdd6f4;">
-            {{ product.price }} €
-        </p>
-
-        <a href="{% url 'product_detail' product.pk %}"
-           style="
-                display:inline-block;
-                margin-top:10px;
-                padding:10px 15px;
-                background:#ffd166;
-                color:black;
-                border-radius:8px;
-                font-weight:600;
-                text-decoration:none;
-           ">
-            Voir
-        </a>
-    </div>
-
-    {% endfor %}
-
-</div>
-
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Boutique</p>
+    <h1 class="page-title">Équipe-toi pour tes séances</h1>
+    <p class="lead">Accessoires, compléments et tenues sélectionnés pour FitTrackr.</p>
+</section>
 {% endblock %}
 
+{% block content %}
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px;">
+    {% for product in products %}
+    <div style="
+        padding:18px;
+        border-radius:16px;
+        background:#0d1b2a;
+        box-shadow:0 12px 30px rgba(0,0,0,0.25);
+        color:white;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    ">
+        {% if product.image %}
+        <img src="{{ product.image.url }}"
+             alt="{{ product.name }}"
+             style="width:100%; height:180px; object-fit:cover; border-radius:12px;">
+        {% endif %}
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+            <h3 style="margin:0; font-size:18px; font-weight:700;">{{ product.name }}</h3>
+            <span style="background:rgba(255,255,255,0.08); padding:6px 10px; border-radius:10px; font-weight:700;">{{ product.price }} €</span>
+        </div>
+        <p style="margin:0; color:#cdd6f4; line-height:1.4; min-height:48px;">{{ product.description|truncatechars:120 }}</p>
+
+        <div style="display:flex; gap:10px; margin-top:auto;">
+            <a href="{% url 'product_detail' product.pk %}"
+               class="btn ghost"
+               style="flex:1; text-align:center; border:1px solid rgba(255,255,255,0.25);">
+                Voir
+            </a>
+            <a href="{% url 'add_to_cart' product.pk %}"
+               class="btn primary"
+               style="flex:1; text-align:center;">
+                Ajouter
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card">Aucun produit pour le moment.</div>
+    {% endfor %}
+</div>
+{% endblock %}

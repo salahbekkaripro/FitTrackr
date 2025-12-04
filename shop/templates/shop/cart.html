@@ -1,23 +1,60 @@
 {% extends "base.html" %}
 
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Panier</p>
+    <h1 class="page-title">Prêt à passer au paiement ?</h1>
+    <p class="lead">Vérifie tes articles puis règle en ligne en une étape.</p>
+</section>
+{% endblock %}
+
 {% block content %}
-<h2>Mon panier</h2>
+<div class="card soft" style="display:flex; gap:20px; flex-direction:column;">
+    {% if items %}
+        {% for item in items %}
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 16px;
+            border-radius:12px;
+            background:linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border:1px solid rgba(255,255,255,0.07);
+        ">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="font-weight:600; font-size:16px;">{{ item.product.name }}</div>
+                <div style="color:#cdd6f4; font-size:14px;">
+                    {{ item.quantity }} × {{ item.product.price }} €
+                </div>
+            </div>
+            <div style="text-align:right; font-weight:700; font-size:16px;">
+                {{ item.total_price }} €
+            </div>
+        </div>
+        {% endfor %}
 
-{% if items %}
-    <ul>
-    {% for item in items %}
-        <li>
-            {{ item.product.name }} — {{ item.quantity }} × {{ item.product.price }} €  
-            = <b>{{ item.total_price }}</b> €
-        </li>
-    {% endfor %}
-    </ul>
-
-    <h3>Total : {{ total }} €</h3>
-
-    <a href="{% url 'checkout' %}" class="btn btn-primary">Valider la commande</a>
-{% else %}
-    <p>Votre panier est vide.</p>
-{% endif %}
-
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:18px 16px;
+            border-radius:12px;
+            background:#0d1b2a;
+            color:#fff;
+            box-shadow:0 10px 30px rgba(0,0,0,0.3);
+        ">
+            <div>
+                <div style="font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color:#9fb3c8;">Total</div>
+                <div style="font-size:22px; font-weight:700;">{{ total }} €</div>
+            </div>
+            <a href="{% url 'checkout' %}" class="btn primary" style="padding:12px 18px; font-weight:700;">
+                Passer au paiement
+            </a>
+        </div>
+    {% else %}
+        <div style="text-align:center; color:#cdd6f4; padding:24px;">
+            Votre panier est vide. <a href="{% url 'shop' %}" class="link">Retour à la boutique</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

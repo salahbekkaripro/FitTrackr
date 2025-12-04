@@ -212,4 +212,4 @@ def profile_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect("login")  # ou une autre page
+    return redirect("connexion")  # renvoie vers la page de connexion

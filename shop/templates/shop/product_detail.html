@@ -1,14 +1,31 @@
 {% extends "base.html" %}
 
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Produit</p>
+    <h1 class="page-title">{{ product.name }}</h1>
+    <p class="lead">Découvre le détail avant d'ajouter au panier.</p>
+</section>
+{% endblock %}
+
 {% block content %}
-<h2>{{ product.name }}</h2>
+<div class="card soft" style="display:grid; grid-template-columns:1.4fr 1fr; gap:20px; align-items:start;">
+    <div>
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%; border-radius:14px; object-fit:cover; max-height:380px;">
+        {% endif %}
+    </div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+            <div style="font-size:24px; font-weight:700;">{{ product.name }}</div>
+            <div style="font-size:22px; font-weight:700; background:#0d1b2a; padding:10px 14px; border-radius:10px;">{{ product.price }} €</div>
+        </div>
+        <p style="color:#cdd6f4; line-height:1.6;">{{ product.description }}</p>
 
-{% if product.image %}
-<img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:300px; border-radius:8px;">
-{% endif %}
-
-<p style="margin-top:10px;">{{ product.description }}</p>
-<p><b>{{ product.price }} €</b></p>
-
-<a href="{% url 'add_to_cart' product.pk %}" class="btn btn-success">Ajouter au panier</a>
+        <div style="display:flex; gap:10px; margin-top:6px;">
+            <a href="{% url 'add_to_cart' product.pk %}" class="btn primary">Ajouter au panier</a>
+            <a href="{% url 'shop' %}" class="btn ghost">Retour boutique</a>
+        </div>
+    </div>
+</div>
 {% endblock %}
