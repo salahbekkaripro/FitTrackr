@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Historique</p>
+    <h1 class="page-title">Tes commandes</h1>
+    <p class="lead">Retrouve le détail de tes achats et paiements.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card soft" style="display:flex; flex-direction:column; gap:14px;">
+    {% if orders %}
+        {% for order in orders %}
+        <div style="border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px 16px; background:rgba(255,255,255,0.02); display:grid; grid-template-columns:1fr auto; gap:10px; align-items:start;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <strong>Commande #{{ order.id }}</strong>
+                    <span class="pill small" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);">
+                        {{ order.get_status_display }}
+                    </span>
+                    {% if order.payment %}
+                    <span class="pill small" style="background:rgba(109,211,194,0.12); color:#6dd3c2; border:1px solid rgba(109,211,194,0.4);">
+                        Paiement {{ order.payment.get_status_display }}
+                    </span>
+                    {% endif %}
+                </div>
+                <div style="color:#cdd6f4; font-size:14px;">Passée le {{ order.created_at|date:"d/m/Y H:i" }} | Livraison : {{ order.address }}</div>
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    {% for item in order.items.all %}
+                    <div style="display:flex; justify-content:space-between; gap:8px; color:#e7f1f7;">
+                        <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                        <span>{{ item.line_total }} €</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div style="text-align:right; font-weight:800; font-size:18px;">{{ order.total }} €</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align:center; color:#cdd6f4; padding:18px;">Aucune commande pour le moment.</div>
+    {% endif %}
+</div>
+{% endblock %}

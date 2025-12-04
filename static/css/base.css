@@ -112,6 +112,69 @@ a:hover {
     background: rgba(255, 255, 255, 0.04);
 }
 
+.nav-item {
+    position: relative;
+}
+
+.nav-dropdown .nav-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.nav-dropdown .chevron {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.nav-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 200px;
+    padding: 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow);
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.nav-dropdown.is-open .nav-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.nav-dropdown .nav-trigger:hover,
+.nav-dropdown.is-open .nav-trigger {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.dropdown-link {
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--text);
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.dropdown-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
 .header-actions {
     display: inline-flex;
     align-items: center;

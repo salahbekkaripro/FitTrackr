@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Merci</p>
+    <h1 class="page-title">Commande confirmée</h1>
+    <p class="lead">Paiement simulé avec succès. Tu recevras une notification quand ta commande sera expédiée.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card soft" style="display:grid; gap:18px;">
+    <div style="display:flex; align-items:center; gap:12px; padding:14px; border-radius:12px; background:rgba(76, 217, 100, 0.08); border:1px solid rgba(76, 217, 100, 0.3); color:#b2f2bb;">
+        <span style="font-weight:700;">Paiement validé</span>
+        <span style="color:#d0f5d8;">Référence : {{ payment.reference }}</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-weight:700; font-size:16px;">Récapitulatif</div>
+            {% for item in order.items.all %}
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                padding:10px 12px;
+                border-radius:10px;
+                background:rgba(255,255,255,0.02);
+                border:1px solid rgba(255,255,255,0.06);
+            ">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <span>{{ item.line_total }} €</span>
+            </div>
+            {% endfor %}
+            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px; padding-top:6px;">
+                <span>Total</span>
+                <span>{{ order.total }} €</span>
+            </div>
+        </div>
+        <div style="width:320px; background:#0d1b2a; border-radius:12px; padding:14px; border:1px solid rgba(255,255,255,0.04);">
+            <div style="font-weight:700; margin-bottom:6px;">Livraison</div>
+            <p style="color:#cdd6f4; line-height:1.5;">{{ order.address }}</p>
+            <div style="height:1px; background:rgba(255,255,255,0.08); margin:10px 0;"></div>
+            <p class="muted" style="font-size:12px;">Statut commande : {{ order.get_status_display }}</p>
+            <p class="muted" style="font-size:12px;">Paiement : {{ payment.get_status_display }} ({{ payment.method }})</p>
+        </div>
+    </div>
+
+    <div style="display:flex; gap:12px;">
+        <a href="{% url 'shop' %}" class="btn primary">Retour à la boutique</a>
+        <a href="{% url 'cart' %}" class="btn ghost">Voir mon panier</a>
+    </div>
+</div>
+{% endblock %}
