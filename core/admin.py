@@ -14,7 +14,7 @@ from .models import (
     Order,
     OrderItem
 )
-
+#test
 admin.site.register(Subscription)
 admin.site.register(User)
 admin.site.register(Workout)
