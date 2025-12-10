@@ -144,9 +144,24 @@
         </div>
     </div>
 
+    {% if messages %}
+    <div class="flash-stack" data-flash-stack>
+        {% for message in messages %}
+        <div class="flash flash-{{ message.level_tag|default:'info' }}">
+            <div class="flash-body">
+                <span class="flash-dot"></span>
+                <div class="flash-text">{{ message }}</div>
+            </div>
+            <button type="button" class="flash-close" data-flash-close aria-label="Fermer">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <script src="{% static 'js/logout.js' %}"></script>
     <script src="{% static 'js/onboarding-reminder.js' %}"></script>
     <script src="{% static 'js/nav-dropdown.js' %}"></script>
+    <script src="{% static 'js/flash-messages.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

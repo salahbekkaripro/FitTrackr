@@ -1,14 +1,44 @@
 import uuid
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import CartItem, Order, OrderItem, Payment, Product
 
 
+def _parse_quantity(request):
+    """Extract a positive quantity from request data."""
+    raw = request.POST.get("quantity") or request.GET.get("quantity")
+    try:
+        qty = int(raw)
+    except (TypeError, ValueError):
+        return 1
+    return max(1, qty)
+
+
 def product_list(request):
-    products = Product.objects.all()
-    return render(request, "shop/product_list.html", {"products": products})
+    category_filter = request.GET.get("cat", "").strip()
+
+    products_qs = Product.objects.all()
+    if category_filter:
+        products_qs = products_qs.filter(category__iexact=category_filter)
+
+    categories = (
+        Product.objects.values_list("category", flat=True)
+        .distinct()
+        .order_by("category")
+    )
+
+    return render(
+        request,
+        "shop/product_list.html",
+        {
+            "products": products_qs,
+            "categories": categories,
+            "active_category": category_filter,
+        },
+    )
 
 
 def product_detail(request, pk):
@@ -19,16 +49,57 @@ def product_detail(request, pk):
 @login_required
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    quantity = _parse_quantity(request)
+    next_url = request.POST.get("next") or request.GET.get("next")
 
     cart_item, created = CartItem.objects.get_or_create(
         user=request.user, product=product
     )
 
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+    if created:
+        cart_item.quantity = quantity
+    else:
+        cart_item.quantity += quantity
+    cart_item.save()
 
+    messages.success(
+        request,
+        f"{quantity} × {product.name} ajouté au panier (total: {cart_item.quantity}).",
+    )
+
+    if next_url and next_url.startswith("/"):
+        return redirect(next_url)
     return redirect("shop")
+
+
+@login_required
+def remove_from_cart(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    quantity = _parse_quantity(request)
+    next_url = request.POST.get("next") or request.GET.get("next")
+
+    try:
+        cart_item = CartItem.objects.get(user=request.user, product=product)
+    except CartItem.DoesNotExist:
+        messages.error(request, "Cet article n'est pas dans ton panier.")
+        if next_url and next_url.startswith("/"):
+            return redirect(next_url)
+        return redirect("cart")
+
+    if quantity >= cart_item.quantity:
+        cart_item.delete()
+        messages.success(request, f"{product.name} retiré du panier.")
+    else:
+        cart_item.quantity -= quantity
+        cart_item.save()
+        messages.success(
+            request,
+            f"{quantity} retiré(s). Nouveau total pour {product.name}: {cart_item.quantity}.",
+        )
+
+    if next_url and next_url.startswith("/"):
+        return redirect(next_url)
+    return redirect("cart")
 
 
 @login_required

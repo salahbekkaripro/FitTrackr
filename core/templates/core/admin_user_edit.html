@@ -56,12 +56,6 @@
       <span class="pill small">Admin uniquement</span>
     </div>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert info" style="margin-bottom: 10px;">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-
     <form method="post" class="profile-form">
       {% csrf_token %}
       <div class="split-grid">

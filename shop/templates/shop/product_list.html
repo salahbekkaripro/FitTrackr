@@ -9,45 +9,113 @@
 {% endblock %}
 
 {% block content %}
-<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px;">
-    {% for product in products %}
-    <div style="
-        padding:18px;
-        border-radius:16px;
-        background:#0d1b2a;
-        box-shadow:0 12px 30px rgba(0,0,0,0.25);
-        color:white;
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-    ">
-        {% if product.image %}
-        <img src="{{ product.image.url }}"
-             alt="{{ product.name }}"
-             style="width:100%; height:180px; object-fit:cover; border-radius:12px;">
-        {% endif %}
-
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-            <h3 style="margin:0; font-size:18px; font-weight:700;">{{ product.name }}</h3>
-            <span style="background:rgba(255,255,255,0.08); padding:6px 10px; border-radius:10px; font-weight:700;">{{ product.price }} €</span>
+<div class="shop-section">
+    <div class="shop-usp-grid">
+        <div class="shop-usp-card">
+            <p class="eyebrow" style="margin-bottom:4px;">Livraison</p>
+            <strong>Expédition 48h</strong>
+            <p class="muted">Stock en France, suivi communiqué dès la validation.</p>
         </div>
-        <p style="margin:0; color:#cdd6f4; line-height:1.4; min-height:48px;">{{ product.description|truncatechars:120 }}</p>
-
-        <div style="display:flex; gap:10px; margin-top:auto;">
-            <a href="{% url 'product_detail' product.pk %}"
-               class="btn ghost"
-               style="flex:1; text-align:center; border:1px solid rgba(255,255,255,0.25);">
-                Voir
-            </a>
-            <a href="{% url 'add_to_cart' product.pk %}"
-               class="btn primary"
-               style="flex:1; text-align:center;">
-                Ajouter
-            </a>
+        <div class="shop-usp-card">
+            <p class="eyebrow" style="margin-bottom:4px;">Qualité</p>
+            <strong>Sélection FitTrackr</strong>
+            <p class="muted">Matériel testé par nos coachs et validé pour l'entraînement.</p>
+        </div>
+        <div class="shop-usp-card">
+            <p class="eyebrow" style="margin-bottom:4px;">Budget</p>
+            <strong>Packs prêts à l'emploi</strong>
+            <p class="muted">Bundles essentiels pour t'équiper sans réfléchir.</p>
         </div>
     </div>
-    {% empty %}
-    <div class="card">Aucun produit pour le moment.</div>
-    {% endfor %}
+
+    {% if categories %}
+    <div class="shop-chip-row">
+        <a class="shop-chip {% if not active_category %}is-active{% endif %}" href="{% url 'shop' %}">Toutes</a>
+        {% for category in categories %}
+        <a class="shop-chip {% if active_category|lower == category|lower %}is-active{% endif %}"
+           href="{% url 'shop' %}?cat={{ category|urlencode }}">
+            {{ category }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="shop-product-grid">
+        {% for product in products %}
+        <div class="shop-product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="shop-product-image">
+            {% endif %}
+
+            <div class="shop-product-head">
+                <div>
+                    <h3 class="shop-product-title">{{ product.name }}</h3>
+                    <p class="muted" style="margin:2px 0 0;">{{ product.category }}</p>
+                </div>
+                <span class="shop-product-price">{{ product.price }} €</span>
+            </div>
+            <p class="shop-product-desc">{{ product.description|truncatechars:120 }}</p>
+
+            <div class="shop-product-actions">
+                <a href="{% url 'product_detail' product.pk %}" class="btn ghost shop-product-btn">
+                    Voir
+                </a>
+                <form method="post" action="{% url 'add_to_cart' product.pk %}" class="shop-inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <input type="number" name="quantity" min="1" value="1" class="qty-input" aria-label="Quantité à ajouter">
+                    <button type="submit" class="btn primary shop-product-btn">Ajouter</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="card">Aucun produit pour le moment.</div>
+        {% endfor %}
+    </div>
+
+    <div class="card soft">
+        <div class="card-head">
+            <div>
+                <p class="eyebrow">Packs prêts à l'emploi</p>
+                <h2>Ces combinaisons fonctionnent bien ensemble</h2>
+            </div>
+            <span class="pill">Sélection coach</span>
+        </div>
+        <div class="shop-collection-grid">
+            <div class="shop-collection-card">
+                <div class="shop-collection-head">
+                    <h3>Pack Force</h3>
+                    <span class="pill small">Musculation</span>
+                </div>
+                <p class="muted">Sangles de tirage, bandes de résistance lourdes et ceinture de lest pour monter en charge.</p>
+                <div class="shop-collection-meta">
+                    <span class="dot positive"></span>
+                    <span>Pour séances traction, dips, hip thrust.</span>
+                </div>
+            </div>
+            <div class="shop-collection-card">
+                <div class="shop-collection-head">
+                    <h3>Pack Mobilité</h3>
+                    <span class="pill small">Recovery</span>
+                </div>
+                <p class="muted">Roulette de massage, mini-bandes et foam roller pour prévenir les blessures.</p>
+                <div class="shop-collection-meta">
+                    <span class="dot positive"></span>
+                    <span>Idéal échauffement et retour au calme.</span>
+                </div>
+            </div>
+            <div class="shop-collection-card">
+                <div class="shop-collection-head">
+                    <h3>Pack Endurance</h3>
+                    <span class="pill small">Cardio</span>
+                </div>
+                <p class="muted">Ceinture porte-bidon, chaussettes techniques et sangle cardio pour tes sorties longues.</p>
+                <div class="shop-collection-meta">
+                    <span class="dot positive"></span>
+                    <span>Prêt pour course, rando ou vélo.</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
