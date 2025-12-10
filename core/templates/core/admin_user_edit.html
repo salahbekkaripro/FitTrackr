@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}FitTrackR · Admin · {{ target_user.username }}{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+  <p class="eyebrow">Administration</p>
+  <h1 class="page-title">Modifier {{ target_user.username }}</h1>
+  <p class="lead">Met à jour le rôle, l'abonnement ou les informations du compte.</p>
+</section>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <p class="eyebrow">Résumé</p>
+        <h2>{{ target_user.username }}</h2>
+        <p class="muted" style="margin: 4px 0 0;">{{ target_user.email }}</p>
+      </div>
+      {% if target_user.subscription %}
+        <span class="pill">{{ target_user.subscription.name }}</span>
+      {% else %}
+        <span class="pill">Sans abonnement</span>
+      {% endif %}
+    </div>
+    <div class="profile-grid">
+      <div>
+        <p class="muted">Rôle</p>
+        <strong>{{ target_user.get_role_display }}</strong>
+      </div>
+      <div>
+        <p class="muted">Âge</p>
+        <strong>{{ target_user.age|default:"-" }}</strong>
+      </div>
+      <div>
+        <p class="muted">Poids</p>
+        <strong>{% if target_user.weight %}{{ target_user.weight }} kg{% else %}-{% endif %}</strong>
+      </div>
+      <div>
+        <p class="muted">Taille</p>
+        <strong>{% if target_user.size %}{{ target_user.size }} cm{% else %}-{% endif %}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <p class="eyebrow">Mettre à jour</p>
+        <h2>Infos et abonnement</h2>
+      </div>
+      <span class="pill small">Admin uniquement</span>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert info" style="margin-bottom: 10px;">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" class="profile-form">
+      {% csrf_token %}
+      <div class="split-grid">
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label><br>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email</label><br>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.role.id_for_label }}">Rôle</label><br>
+          {{ form.role }}
+          {{ form.role.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.subscription.id_for_label }}">Abonnement</label><br>
+          {{ form.subscription }}
+          {{ form.subscription.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.age.id_for_label }}">Âge</label><br>
+          {{ form.age }}
+          {{ form.age.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.weight.id_for_label }}">Poids (kg)</label><br>
+          {{ form.weight }}
+          {{ form.weight.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.size.id_for_label }}">Taille (cm)</label><br>
+          {{ form.size }}
+          {{ form.size.errors }}
+        </div>
+      </div>
+      <div class="profile-actions">
+        <a class="btn ghost" href="{% url 'admin_users_list' %}">Retour</a>
+        <button type="submit" class="btn primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

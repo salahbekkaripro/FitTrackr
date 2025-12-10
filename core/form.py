@@ -52,3 +52,23 @@ class ProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for name in ["age", "weight", "size"]:
             self.fields[name].required = False
+
+
+class AdminUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "role", "subscription", "age", "weight", "size"]
+        widgets = {
+            "username": forms.TextInput(attrs={"class": "control"}),
+            "email": forms.EmailInput(attrs={"class": "control"}),
+            "role": forms.Select(attrs={"class": "control"}),
+            "subscription": forms.Select(attrs={"class": "control"}),
+            "age": forms.NumberInput(attrs={"class": "control"}),
+            "weight": forms.NumberInput(attrs={"class": "control"}),
+            "size": forms.NumberInput(attrs={"class": "control"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ["age", "weight", "size", "subscription"]:
+            self.fields[name].required = False

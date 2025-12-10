@@ -40,6 +40,9 @@
                 <a href="{% url 'subscriptions' %}" class="link">Abonnement</a>
                 <a href="#" class="link">Sessions</a>
                 <a href="{% url 'profile' %}" class="link">Profil</a>
+                {% if user.is_authenticated and user.is_admin_role %}
+                <a href="{% url 'admin_users_list' %}" class="link">Admin</a>
+                {% endif %}
                 {% endblock %}
             </nav>
 

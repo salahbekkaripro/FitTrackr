@@ -50,8 +50,22 @@ class SubscriptionEngagement(models.Model):
 #   USERS (custom auth user)
 # =========================================================
 class User(AbstractUser):
+    ROLE_MEMBER = "member"
+    ROLE_COACH = "coach"
+    ROLE_ADMIN = "admin"
+    ROLE_CHOICES = [
+        (ROLE_MEMBER, "Utilisateur"),
+        (ROLE_COACH, "Coach"),
+        (ROLE_ADMIN, "Admin"),
+    ]
+
     # Email unique pour éviter les doublons
     email = models.EmailField(unique=True)
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=ROLE_MEMBER,
+    )
     age = models.IntegerField(
         validators=[MinValueValidator(16)],
         null=True,
@@ -78,6 +92,46 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_coach(self):
+        return self.role == self.ROLE_COACH
+
+    @property
+    def is_admin_role(self):
+        return self.role == self.ROLE_ADMIN
+
+
+class CoachManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(role=User.ROLE_COACH)
+
+
+class Coach(User):
+    objects = CoachManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        self.role = self.ROLE_COACH
+        return super().save(*args, **kwargs)
+
+
+class AdminManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(role=User.ROLE_ADMIN)
+
+
+class AdminUser(User):
+    objects = AdminManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        self.role = self.ROLE_ADMIN
+        return super().save(*args, **kwargs)
 
 
 # =========================================================
