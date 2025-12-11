@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-center">📈 Progression des Entraînements</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {% if labels %}
+                <p class="text-muted">
+                    Analyse des dernières semaines : nombre de séances et durée totale.
+                </p>
+
+                <div class="mt-4">
+                    <canvas id="progressChart" height="120"></canvas>
+                </div>
+
+                <!-- Stockage des données JSON pour JS -->
+                <script type="application/json" id="chart-data">
+                    {
+                        "labels": {{ labels|safe }},
+                        "sessions": {{ session_counts|safe }},
+                        "durations": {{ durations|safe }}
+                    }
+                </script>
+
+            {% else %}
+                <div class="alert alert-info text-center mb-0">
+                    Aucune donnée disponible pour le moment.
+                    <br>Commence par enregistrer tes séances !
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Récupération des données JSON côté JS
+    const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+    const ctx = document.getElementById('progressChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [
+                {
+                    label: 'Séances',
+                    data: chartData.sessions,
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: 'Durée totale (min)',
+                    data: chartData.durations,
+                    borderWidth: 2,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

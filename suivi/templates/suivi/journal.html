@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Journal d'entraînement</h1>
+
+<form method="GET">
+    <label>Filtrer par type :</label>
+    <input type="text" name="type" value="{{ filter_type }}">
+    <button type="submit">Filtrer</button>
+</form>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Titre</th>
+        <th>Type</th>
+        <th>Durée</th>
+        <th>Notes</th>
+    </tr>
+    {% for w in workouts %}
+    <tr>
+        <td>{{ w.workout_date }}</td>
+        <td>{{ w.title }}</td>
+        <td>{{ w.workout_type }}</td>
+        <td>{{ w.duration_minutes }} min</td>
+        <td>{{ w.notes }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">Aucun entraînement enregistré.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'export_workout_csv' %}">Exporter en CSV</a>
+<br>
+<a href="{% url 'dashboard' %}">Retour au dashboard</a>
+{% endblock %}
