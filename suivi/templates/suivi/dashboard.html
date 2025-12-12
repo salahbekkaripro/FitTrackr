@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Tableau de bord</h1>
+
+<h2>Résumé de la semaine</h2>
+<p>Nombre de séances : {{ weekly_summary.nb_sessions|default:"0" }}</p>
+<p>Temps total : {{ weekly_summary.total_minutes|default:"0" }} minutes</p>
+
+<h2>Progression sur 4 semaines</h2>
+<ul>
+    {% for week in progression %}
+        <li>
+            Semaine du {{ week.week }} :
+            {{ week.sessions }} séance(s) – {{ week.minutes }} min
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'workout_journal' %}">Voir le journal</a>
+{% endblock %}

@@ -142,10 +142,11 @@ class Workout(models.Model):
     workout_date = models.DateField()
     title = models.CharField(max_length=100)
     notes = models.TextField(null=True, blank=True)
+    workout_type = models.CharField(max_length=50, default="Général")
+    duration_minutes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
-
 
 # =========================================================
 #   EXERCISES
@@ -167,7 +168,6 @@ class Exercise(models.Model):
 class WorkoutSet(models.Model):
     workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="sets")
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-
     set_number = models.IntegerField()
     reps = models.IntegerField()
     weight_kg = models.DecimalField(max_digits=6, decimal_places=2)
@@ -176,7 +176,6 @@ class WorkoutSet(models.Model):
 
     def __str__(self):
         return f"{self.exercise.name} - {self.reps} reps"
-
 
 # =========================================================
 #   GOALS
@@ -276,3 +275,5 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} x{self.quantity}"
+    
+    
