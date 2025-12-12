@@ -21,10 +21,8 @@ from core import views
 from django.conf import settings
 from django.conf.urls.static import static
 
-
-
-
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.connexion, name='connexion'),
@@ -32,11 +30,10 @@ urlpatterns = [
     path('onboarding/', views.onboarding, name='onboarding'),
     path('subscriptions/', views.subscriptions_view, name='subscriptions'),
     path('profile/', views.profile_view, name='profile'),
+
+    # Apps
     path('shop/', include('shop.urls')),
-    path('suivi/', include('suivi.urls')),
-    path('admin/users/', views.admin_users_list, name='admin_users_list'),
-    path('admin/users/<int:user_id>/edit/', views.admin_user_edit, name='admin_user_edit'),
-    path('admin/', admin.site.urls),
+    path('', include('programs.urls')),  # <-- Ajout de programs
 ]
 
 # Serve media files

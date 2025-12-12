@@ -22,13 +22,8 @@
         </div>
         <p style="color:#cdd6f4; line-height:1.6;">{{ product.description }}</p>
 
-        <div style="display:flex; gap:10px; margin-top:6px; align-items:center; flex-wrap:wrap;">
-            <form method="post" action="{% url 'add_to_cart' product.pk %}" class="shop-inline-form">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                <input type="number" name="quantity" min="1" value="1" class="qty-input" aria-label="Quantité à ajouter">
-                <button type="submit" class="btn primary">Ajouter au panier</button>
-            </form>
+        <div style="display:flex; gap:10px; margin-top:6px;">
+            <a href="{% url 'add_to_cart' product.pk %}" class="btn primary">Ajouter au panier</a>
             <a href="{% url 'shop' %}" class="btn ghost">Retour boutique</a>
         </div>
     </div>

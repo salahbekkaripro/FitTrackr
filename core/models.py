@@ -4,7 +4,22 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.utils import timezone
 
+# =========================================================
+#   CHOICES
+# =========================================================
+LEVEL_CHOICES = [
+    ("Débutant", "Débutant"),
+    ("Intermédiaire", "Intermédiaire"),
+    ("Avancé", "Avancé"),
+]
 
+GOAL_CHOICES = [
+    ("Prise de masse", "Prise de masse"),
+    ("Perte de poids", "Perte de poids"),
+    ("Cardio", "Cardio"),
+    ("Force", "Force"),
+    ("Hypertrophie", "Hypertrophie"),
+]
 
 # =========================================================
 #   SUBSCRIPTIONS
@@ -13,7 +28,7 @@ class Subscription(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=20, unique=True)
     price_monthly = models.DecimalField(max_digits=6, decimal_places=2)
-    level_rank = models.IntegerField()
+    level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default="Débutant")
     commitment_months = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -47,41 +62,13 @@ class SubscriptionEngagement(models.Model):
 
 
 # =========================================================
-#   USERS (custom auth user)
+#   USERS
 # =========================================================
 class User(AbstractUser):
-    ROLE_MEMBER = "member"
-    ROLE_COACH = "coach"
-    ROLE_ADMIN = "admin"
-    ROLE_CHOICES = [
-        (ROLE_MEMBER, "Utilisateur"),
-        (ROLE_COACH, "Coach"),
-        (ROLE_ADMIN, "Admin"),
-    ]
-
-    # Email unique pour éviter les doublons
     email = models.EmailField(unique=True)
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default=ROLE_MEMBER,
-    )
-    age = models.IntegerField(
-        validators=[MinValueValidator(16)],
-        null=True,
-        blank=True,
-    )
-    weight = models.IntegerField(
-        validators=[MinValueValidator(1)],
-        null=True,
-        blank=True,
-    )
-    size = models.IntegerField(
-        validators=[MinValueValidator(1)],
-        null=True,
-        blank=True,
-    )
-    # Optional FK → Subscription (0..1)
+    age = models.IntegerField(validators=[MinValueValidator(16)], null=True, blank=True)
+    weight = models.IntegerField(validators=[MinValueValidator(1)], null=True, blank=True)
+    size = models.IntegerField(validators=[MinValueValidator(1)], null=True, blank=True)
     subscription = models.ForeignKey(
         Subscription,
         on_delete=models.SET_NULL,
@@ -93,96 +80,13 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-    @property
-    def is_coach(self):
-        return self.role == self.ROLE_COACH
-
-    @property
-    def is_admin_role(self):
-        return self.role == self.ROLE_ADMIN
-
-
-class CoachManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(role=User.ROLE_COACH)
-
-
-class Coach(User):
-    objects = CoachManager()
-
-    class Meta:
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        self.role = self.ROLE_COACH
-        return super().save(*args, **kwargs)
-
-
-class AdminManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(role=User.ROLE_ADMIN)
-
-
-class AdminUser(User):
-    objects = AdminManager()
-
-    class Meta:
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        self.role = self.ROLE_ADMIN
-        return super().save(*args, **kwargs)
-
-
-# =========================================================
-#   WORKOUTS
-# =========================================================
-class Workout(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="workouts")
-    workout_date = models.DateField()
-    title = models.CharField(max_length=100)
-    notes = models.TextField(null=True, blank=True)
-    workout_type = models.CharField(max_length=50, default="Général")
-    duration_minutes = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.title} - {self.user.username}"
-
-# =========================================================
-#   EXERCISES
-# =========================================================
-class Exercise(models.Model):
-    name = models.CharField(max_length=100)
-    primary_muscle = models.CharField(max_length=50)
-    equipment = models.CharField(max_length=50, null=True, blank=True)
-    difficulty = models.CharField(max_length=20, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-# =========================================================
-#   WORKOUT SETS
-# =========================================================
-class WorkoutSet(models.Model):
-    workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="sets")
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    set_number = models.IntegerField()
-    reps = models.IntegerField()
-    weight_kg = models.DecimalField(max_digits=6, decimal_places=2)
-    rpe = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
-    rest_seconds = models.IntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.exercise.name} - {self.reps} reps"
 
 # =========================================================
 #   GOALS
 # =========================================================
 class Goal(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="goals")
-    goal_type = models.CharField(max_length=50)
+    goal_type = models.CharField(max_length=50, choices=GOAL_CHOICES, default="Non défini")
     target_value = models.DecimalField(max_digits=8, decimal_places=2)
     unit = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
@@ -214,35 +118,6 @@ class UserBadge(models.Model):
 
 
 # =========================================================
-#   PROGRAMS
-# =========================================================
-class Program(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    level = models.CharField(max_length=20, null=True, blank=True)
-    goal_type = models.CharField(max_length=50, null=True, blank=True)
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="programs")
-
-    def __str__(self):
-        return self.name
-
-
-class ProgramExercise(models.Model):
-    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name="exercises")
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-
-    day_index = models.IntegerField()
-    order_index = models.IntegerField()
-    target_sets = models.IntegerField()
-    target_reps = models.IntegerField()
-    target_weight_kg = models.DecimalField(max_digits=6, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.program.name} - {self.exercise.name}"
-
-
-# =========================================================
 #   SHOP
 # =========================================================
 class ShopProduct(models.Model):
@@ -269,11 +144,8 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(ShopProduct, on_delete=models.CASCADE)
-
     quantity = models.IntegerField()
     unit_price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
         return f"{self.product.name} x{self.quantity}"
-    
-    

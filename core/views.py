@@ -5,13 +5,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 
-from .form import CustomerUserCreationForm, OnboardingForm, ProfileForm, AdminUserForm
-from .models import Goal, Subscription, SubscriptionEngagement, User
+from .form import CustomerUserCreationForm, OnboardingForm, ProfileForm
+from .models import Goal, Subscription, SubscriptionEngagement
 
 def home(request):
     """Page d'accueil FitTrackR."""
@@ -217,58 +215,3 @@ def logout_view(request):
     return redirect("connexion")  # renvoie vers la page de connexion
 
 
-@login_required
-def admin_users_list(request):
-    if not getattr(request.user, "is_admin_role", False):
-        raise PermissionDenied("Accès réservé aux admins.")
-
-    search_query = request.GET.get("q", "").strip()
-    users_qs = User.objects.select_related("subscription")
-
-    if search_query:
-        users_qs = users_qs.filter(
-            Q(username__icontains=search_query)
-            | Q(email__icontains=search_query)
-            | Q(role__icontains=search_query)
-        )
-
-    users = users_qs.order_by("username")
-    total_count = User.objects.count()
-    results_count = users_qs.count()
-
-    return render(
-        request,
-        "core/admin_users.html",
-        {
-            "users": users,
-            "search_query": search_query,
-            "total_count": total_count,
-            "results_count": results_count,
-        },
-    )
-
-
-@login_required
-def admin_user_edit(request, user_id):
-    if not getattr(request.user, "is_admin_role", False):
-        raise PermissionDenied("Accès réservé aux admins.")
-
-    target_user = get_object_or_404(User, pk=user_id)
-
-    if request.method == "POST":
-        form = AdminUserForm(request.POST, instance=target_user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Utilisateur mis à jour.")
-            return redirect(reverse("admin_user_edit", args=[target_user.id]))
-    else:
-        form = AdminUserForm(instance=target_user)
-
-    return render(
-        request,
-        "core/admin_user_edit.html",
-        {
-            "form": form,
-            "target_user": target_user,
-        },
-    )

@@ -38,11 +38,9 @@
                     </div>
                 </div>
                 <a href="{% url 'subscriptions' %}" class="link">Abonnement</a>
-                <a href="#" class="link">Sessions</a>
+                <a href="{% url 'program_list' %}" class="link">Programmes</a>
+                <a href="{% url 'workout_list' %}" class="link">Séances</a>
                 <a href="{% url 'profile' %}" class="link">Profil</a>
-                {% if user.is_authenticated and user.is_admin_role %}
-                <a href="{% url 'admin_users_list' %}" class="link">Admin</a>
-                {% endif %}
                 {% endblock %}
             </nav>
 
@@ -56,7 +54,6 @@
                     </button>
                 </form>
                 {% else %}
-                <!-- 🚀 Correction ici : 'login' → 'connexion' -->
                 <a class="btn ghost" href="{% url 'connexion' %}">Se connecter</a>
                 <a class="btn primary" href="{% url 'signup' %}">Créer un compte</a>
                 {% endif %}
@@ -78,32 +75,7 @@
 
             <section class="page-grid">
                 <div class="content">
-                    {% block content %}
-                    <div class="card">
-                        <div class="card-head">
-                            <h2>Section de contenu</h2>
-                            <span class="pill">Exemple</span>
-                        </div>
-                        <p class="muted">Remplacez ce contenu par vos vues. La classe <code>card</code> gère l'espacement, les coins et l'ombre.</p>
-                        <div class="stat-grid">
-                            <div class="stat">
-                                <div class="stat-label">Volume</div>
-                                <div class="stat-value">12k</div>
-                                <div class="stat-trend up">+8%</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-label">Temps</div>
-                                <div class="stat-value">6h30</div>
-                                <div class="stat-trend down">-2%</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-label">Sessions</div>
-                                <div class="stat-value">18</div>
-                                <div class="stat-trend up">+3</div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endblock %}
+                    {% block content %}{% endblock %}
                 </div>
 
                 <aside class="sidebar">
@@ -144,24 +116,9 @@
         </div>
     </div>
 
-    {% if messages %}
-    <div class="flash-stack" data-flash-stack>
-        {% for message in messages %}
-        <div class="flash flash-{{ message.level_tag|default:'info' }}">
-            <div class="flash-body">
-                <span class="flash-dot"></span>
-                <div class="flash-text">{{ message }}</div>
-            </div>
-            <button type="button" class="flash-close" data-flash-close aria-label="Fermer">×</button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
     <script src="{% static 'js/logout.js' %}"></script>
     <script src="{% static 'js/onboarding-reminder.js' %}"></script>
     <script src="{% static 'js/nav-dropdown.js' %}"></script>
-    <script src="{% static 'js/flash-messages.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
