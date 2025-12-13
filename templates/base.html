@@ -64,7 +64,6 @@
                     </button>
                 </form>
                 {% else %}
-                <!-- 🚀 Correction ici : 'login' → 'connexion' -->
                 <a class="btn ghost" href="{% url 'connexion' %}">Se connecter</a>
                 <a class="btn primary" href="{% url 'signup' %}">Créer un compte</a>
                 {% endif %}
@@ -86,32 +85,7 @@
 
             <section class="page-grid">
                 <div class="content">
-                    {% block content %}
-                    <div class="card">
-                        <div class="card-head">
-                            <h2>Section de contenu</h2>
-                            <span class="pill">Exemple</span>
-                        </div>
-                        <p class="muted">Remplacez ce contenu par vos vues. La classe <code>card</code> gère l'espacement, les coins et l'ombre.</p>
-                        <div class="stat-grid">
-                            <div class="stat">
-                                <div class="stat-label">Volume</div>
-                                <div class="stat-value">12k</div>
-                                <div class="stat-trend up">+8%</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-label">Temps</div>
-                                <div class="stat-value">6h30</div>
-                                <div class="stat-trend down">-2%</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-label">Sessions</div>
-                                <div class="stat-value">18</div>
-                                <div class="stat-trend up">+3</div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endblock %}
+                    {% block content %}{% endblock %}
                 </div>
 
                 <aside class="sidebar">
@@ -131,6 +105,7 @@
         </footer>
     </div>
 
+    <!-- Déconnexion overlay -->
     <div class="logout-overlay" aria-hidden="true">
         <div class="panel">
             <div class="big-spinner"></div>
@@ -139,6 +114,7 @@
         </div>
     </div>
 
+    <!-- Onboarding overlay -->
     <div class="onboarding-overlay" id="onboarding-reminder" aria-hidden="true">
         <div class="panel">
             <button type="button" class="close-btn" data-onboarding-close aria-label="Fermer">×</button>
@@ -152,6 +128,7 @@
         </div>
     </div>
 
+    <!-- Messages flash -->
     {% if messages %}
     <div class="flash-stack" data-flash-stack>
         {% for message in messages %}
