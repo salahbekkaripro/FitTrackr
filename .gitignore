@@ -20,4 +20,4 @@ env/
 .DS_Store
 
 # Fichiers perso
-arborescence.txt
+arborescence.txt.DS_Store
