@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Programmes{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Programmes</p>
+    <h1 class="page-title">Mes programmes</h1>
+    <p class="lead">Crée et organise tes programmes d’entraînement personnalisés.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+    <a href="{% url 'create_program' %}" class="btn primary">Créer un nouveau programme</a>
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+
+    {% if programs %}
+        {% for program in programs %}
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; gap:10px; background:#0d1b2a; color:white;">
+            <h3 style="margin:0; font-weight:700;">{{ program.name }}</h3>
+            {% if program.description %}
+            <p class="muted" style="color:#cdd6f4;">{{ program.description|truncatechars:120 }}</p>
+            {% endif %}
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                {% if program.level %}<span class="pill">{{ program.level }}</span>{% endif %}
+                {% if program.goal_type %}<span class="pill">{{ program.goal_type }}</span>{% endif %}
+            </div>
+            <div style="display:flex; gap:8px; margin-top:auto;">
+                <a href="{% url 'program_detail' program.id %}" class="btn primary" style="flex:1;">Voir détails</a>
+                <a href="{% url 'edit_program' program.id %}" class="btn ghost" style="flex:1;">Modifier</a>
+                <a href="{% url 'delete_program' program.id %}" class="btn danger" style="flex:1;">Supprimer</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card soft" style="padding:16px; text-align:center; background:#0d1b2a; color:white;">
+            <p class="muted">Aucun programme disponible pour le moment.</p>
+            <a href="{% url 'create_program' %}" class="btn primary mt-2">Créer un nouveau programme</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

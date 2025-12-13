@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if edit %}Modifier{% else %}Ajouter{% endif %} une séance
+{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Séances</p>
+    <h1 class="page-title">
+        {% if edit %}Modifier{% else %}Ajouter{% endif %} une séance
+    </h1>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card soft" style="max-width:600px; margin:auto;">
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Date + durée -->
+        <div style="display:flex; gap:20px; align-items:flex-end; margin-bottom:15px;">
+            <div style="flex:1;">
+                <label for="{{ form.workout_date.id_for_label }}">Date :</label><br>
+                {{ form.workout_date }}
+            </div>
+
+            <div style="flex:1;">
+                <label for="{{ form.duration_minutes.id_for_label }}">
+                    Durée (minutes) :
+                </label><br>
+                {{ form.duration_minutes }}
+            </div>
+        </div>
+
+        <!-- Titre -->
+        <div style="margin-bottom:15px;">
+            <label for="{{ form.title.id_for_label }}">Titre :</label><br>
+            {{ form.title }}
+        </div>
+
+        <!-- Notes -->
+        <div style="margin-bottom:15px;">
+            <label for="{{ form.notes.id_for_label }}">Notes :</label><br>
+            {{ form.notes }}
+        </div>
+
+        <!-- Programme -->
+        <div style="margin-bottom:20px;">
+            <label for="{{ form.program.id_for_label }}">
+                Programme (optionnel) :
+            </label><br>
+            {{ form.program }}
+        </div>
+
+        <!-- Bouton -->
+        <button type="submit" class="btn primary" style="width:100%;">
+            {% if edit %}Modifier la séance{% else %}Ajouter la séance{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

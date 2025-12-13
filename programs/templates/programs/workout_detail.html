@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Séance — {{ workout.title }}{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Séance</p>
+    <h1 class="page-title">{{ workout.title }}</h1>
+    <p class="lead">{{ workout.notes|default:"Aucune description." }}</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card soft">
+    <h2>Exercices de cette séance</h2>
+    <ul class="simple-list">
+        {% if workout.program %}
+            {% for ex in workout.program.program_exercises.all %}
+            <li>
+                <strong>{{ ex.exercise.name }}</strong> — {{ ex.target_sets }}×{{ ex.target_reps }} @ {{ ex.target_weight_kg }}kg
+            </li>
+            {% endfor %}
+        {% else %}
+            {% for s in workout.sets.all %}
+            <li>
+                <strong>{{ s.exercise.name }}</strong> — {{ s.set_number }} séries × {{ s.reps }} répétitions @ {{ s.weight_kg }}kg
+            </li>
+            {% empty %}
+            <li class="muted">Aucun exercice dans cette séance.</li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+
+    <div class="actions mt-2">
+        <a href="{% url 'workout_list' %}" class="btn ghost">← Retour aux séances</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="card soft">
+    <h3>Infos séance</h3>
+    <p class="muted">Nom : <strong>{{ workout.title }}</strong></p>
+    <p class="muted">Programme : <strong>{{ workout.program.name|default:"Libre" }}</strong></p>
+    <p class="muted">Exercices : <strong>{{ workout.sets.count }}</strong></p>
+    <a href="{% url 'workout_list' %}" class="btn full ghost mt-2">Toutes les séances</a>
+</div>
+{% endblock %}

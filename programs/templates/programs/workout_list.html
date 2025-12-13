@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Séances{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Séances</p>
+    <h1 class="page-title">Toutes les séances</h1>
+    <p class="lead">Visualise toutes tes séances d’entraînement planifiées.</p>
+    <a href="{% url 'create_workout' %}" class="btn primary" style="margin-top:10px;">Ajouter une séance</a>
+</section>
+{% endblock %}
+
+{% block content %}
+<h2>Séances à venir</h2>
+<div class="grid-cards">
+    {% if upcoming_workouts %}
+        {% for workout in upcoming_workouts %}
+        <div class="card">
+            <h3>{{ workout.title }}</h3>
+            <p class="muted">Date : {{ workout.workout_date }}</p>
+            {% if workout.notes %}<p class="muted">{{ workout.notes|truncatechars:100 }}</p>{% endif %}
+            {% if workout.program %}<p class="muted">Programme : {{ workout.program.name }}</p>{% endif %}
+            <div class="actions">
+               <a href="{% url 'workout_detail' workout.id %}" class="btn primary">Voir détails</a>
+               <a href="{% url 'edit_workout' workout.id %}" class="btn secondary">Modifier</a>
+               <form method="post" action="{% url 'delete_workout' workout.id %}" style="display:inline;">
+                   {% csrf_token %}
+                   <button type="submit" class="btn danger">Supprimer</button>
+               </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">Aucune séance à venir.</p>
+    {% endif %}
+</div>
+
+<h2 style="margin-top:30px;">Séances passées</h2>
+<div class="grid-cards">
+    {% if past_workouts %}
+        {% for workout in past_workouts %}
+        <div class="card">
+            <h3>{{ workout.title }}</h3>
+            <p class="muted">Date : {{ workout.workout_date }}</p>
+            {% if workout.notes %}<p class="muted">{{ workout.notes|truncatechars:100 }}</p>{% endif %}
+            {% if workout.program %}<p class="muted">Programme : {{ workout.program.name }}</p>{% endif %}
+            <div class="actions">
+               <a href="{% url 'workout_detail' workout.id %}" class="btn primary">Voir détails</a>
+               <a href="{% url 'edit_workout' workout.id %}" class="btn secondary">Modifier</a>
+               <form method="post" action="{% url 'delete_workout' workout.id %}" style="display:inline;">
+                   {% csrf_token %}
+                   <button type="submit" class="btn danger">Supprimer</button>
+               </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">Aucune séance passée.</p>
+    {% endif %}
+</div>
+{% endblock %}
