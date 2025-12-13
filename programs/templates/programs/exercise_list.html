@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Exercices{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Bibliothèque</p>
+    <h1 class="page-title">Tous les exercices</h1>
+    <p class="lead">Explore les exercices disponibles et leurs détails.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
+    {% if exercises %}
+        {% for exercise in exercises %}
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; gap:10px; background:#0d1b2a; color:white;">
+            <h3 style="margin:0; font-weight:700;">{{ exercise.name }}</h3>
+            <p class="muted" style="color:#cdd6f4;">Muscle principal : {{ exercise.primary_muscle }}</p>
+            {% if exercise.equipment %}
+            <p class="muted" style="color:#cdd6f4;">Équipement : {{ exercise.equipment }}</p>
+            {% endif %}
+            {% if exercise.difficulty %}
+            <p class="muted" style="color:#cdd6f4;">Difficulté : {{ exercise.difficulty }}</p>
+            {% endif %}
+            {% if exercise.description %}
+            <p class="muted" style="color:#cdd6f4;">{{ exercise.description|truncatechars:120 }}</p>
+            {% endif %}
+            <div style="margin-top:auto;">
+                <a href="{% url 'exercise_detail' exercise.id %}" class="btn primary" style="width:100%;">Voir détails</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">Aucun exercice disponible pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

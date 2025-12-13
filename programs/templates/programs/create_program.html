@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Programmes</p>
+    <h1 class="page-title">Créer un nouveau programme</h1>
+    <p class="lead">Renseignez le nom, la description et le niveau de votre programme.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin:auto;">
+    <div class="card soft" style="display:grid; gap:16px; padding:20px;">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label for="{{ field.id_for_label }}" style="font-weight:600;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color:#ff6b6b; font-size:14px;">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn primary" style="margin-top:12px;">Créer le programme</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
