@@ -15,3 +15,9 @@ db.sqlite3
 # Environments
 venv/
 env/
+
+# macOS
+.DS_Store
+
+# Fichiers perso
+arborescence.txt
