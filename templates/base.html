@@ -26,6 +26,7 @@
 
             <nav class="nav-links">
                 {% block nav %}
+                <!-- Menu Boutique déroulant -->
                 <div class="nav-item nav-dropdown" data-dropdown>
                     <button class="link nav-trigger" type="button" data-dropdown-trigger>
                         Boutique
@@ -37,12 +38,18 @@
                         <a href="{% url 'order_history' %}" class="dropdown-link">Historique des commandes</a>
                     </div>
                 </div>
+
+                <!-- Liens principaux -->
                 <a href="{% url 'subscriptions' %}" class="link">Abonnement</a>
+                <a href="{% url 'dashboard' %}" class="link">Suivi</a>
                 <a href="{% url 'program_list' %}" class="link">Programmes</a>
+                <a href="{% url 'workout_journal' %}" class="link">Journal</a>
                 <a href="{% url 'workout_list' %}" class="link">Séances</a>
                 <a href="{% url 'profile' %}" class="link">Profil</a>
+
+                <!-- Lien admin si utilisateur admin -->
                 {% if user.is_authenticated and user.is_admin_role %}
-                <a href="{% url 'admin_users_list' %}" class="link">Admin</a>
+                    <a href="{% url 'admin_users_list' %}" class="link">Admin</a>
                 {% endif %}
                 {% endblock %}
             </nav>
