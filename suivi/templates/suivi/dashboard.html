@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -16,82 +17,48 @@
     <!-- Statistiques hebdo -->
     <div class="card" style="padding:16px; flex:1; min-width:200px; background:#0d1b2a; color:white;">
         <h3>Sessions cette semaine</h3>
-        <p style="font-size:24px; font-weight:700;">{{ weekly_summary.nb_sessions|default:0 }}</p>
+        <p style="font-size:24px; font-weight:700;">
+            {{ weekly_summary.nb_sessions|default:0 }}
+        </p>
     </div>
+
     <div class="card" style="padding:16px; flex:1; min-width:200px; background:#0d1b2a; color:white;">
         <h3>Durée totale (min)</h3>
-        <p style="font-size:24px; font-weight:700;">{{ weekly_summary.total_minutes|default:0 }}</p>
+        <p style="font-size:24px; font-weight:700;">
+            {{ weekly_summary.total_minutes|default:0 }}
+        </p>
     </div>
 </div>
 
-<!-- Graphique progression -->
-<div class="card" style="padding:16px; background:#0d1b2a; color:white; margin-bottom:20px;">
+<!-- Graphique -->
+<div class="card" style="padding:16px; background:#0d1b2a; color:white; width:100%; max-width:900px;">
     <h3>Progression sur 4 semaines</h3>
-    <canvas id="progressChart" style="height:250px;"></canvas>
+
+    <div style="height:400px;">
+        <canvas id="progressChart"></canvas>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ===== Données Django -> JS (SAFE) ===== -->
+{{ labels|json_script:"labels-data" }}
+{{ session_counts|json_script:"sessions-data" }}
+{{ durations|json_script:"durations-data" }}
+{{ total_weight|json_script:"weight-data" }}
+
 <script>
-const ctx = document.getElementById('progressChart').getContext('2d');
-const progressChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: JSON.parse('{{ labels|safe|escapejs }}'),
-        datasets: [
-            {
-                label: 'Séances',
-                data: JSON.parse('{{ session_counts|safe|escapejs }}'),
-                backgroundColor: 'rgba(29, 161, 242, 0.7)',
-                yAxisID: 'y1'
-            },
-            {
-                label: 'Durée (min)',
-                data: JSON.parse('{{ durations|safe|escapejs }}'),
-                backgroundColor: 'rgba(72, 219, 251, 0.7)',
-                yAxisID: 'y1'
-            },
-            {
-                label: 'Charge totale (kg x reps)',
-                data: JSON.parse('{{ total_weight|safe|escapejs }}'),
-                type: 'line',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                fill: true,
-                yAxisID: 'y2'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        interaction: {
-            mode: 'index',
-            intersect: false
-        },
-        scales: {
-            y1: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Séances / Durée (min)'
-                },
-                beginAtZero: true
-            },
-            y2: {
-                type: 'linear',
-                position: 'right',
-                title: {
-                    display: true,
-                    text: 'Charge totale (kg x reps)'
-                },
-                beginAtZero: true,
-                grid: {
-                    drawOnChartArea: false
-                }
-            }
-        }
-    }
-});
+    const labels = JSON.parse(document.getElementById('labels-data').textContent);
+    const sessions = JSON.parse(document.getElementById('sessions-data').textContent);
+    const durations = JSON.parse(document.getElementById('durations-data').textContent);
+    const totalWeight = JSON.parse(document.getElementById('weight-data').textContent);
+
+    console.log("Labels :", labels);
+    console.log("Sessions :", sessions);
+    console.log("Durées :", durations);
+    console.log("Charge :", totalWeight);
 </script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/chart.js' %}"></script>
 
 {% endblock %}

@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum
+from django.db.models import Sum,Count
 from datetime import date, timedelta
-import csv
 from django.http import HttpResponse
-
+import csv
 from programs.models import Workout as ProgramWorkout, WorkoutSet as ProgramWorkoutSet
 
 # ==========================================
@@ -14,34 +13,58 @@ from programs.models import Workout as ProgramWorkout, WorkoutSet as ProgramWork
 def dashboard(request):
     user = request.user
     today = date.today()
-    start_week = today - timedelta(days=today.weekday())
-    start_period = today - timedelta(weeks=4)
+    
+    # On récupère les 4 dernières semaines, en commençant il y a 3 semaines + semaine en cours
+    start_period = today - timedelta(weeks=3)
+    start_week = start_period - timedelta(days=start_period.weekday())  # lundi de la première semaine
+    
+    workouts = ProgramWorkout.objects.filter(user=user, workout_date__gte=start_week)
+    
+    labels = []
+    session_counts = []
+    durations = []
+    total_weight = []
 
-    # Récupérer les workouts de l'utilisateur sur les 4 dernières semaines
-    workouts = ProgramWorkout.objects.filter(user=user, workout_date__gte=start_period)
-
-    # Stats hebdomadaires
-    weekly_summary = workouts.filter(workout_date__gte=start_week)\
-        .aggregate(nb_sessions=Count('id'), total_minutes=Sum('duration_minutes'))
-
-    # Progression par semaine
-    progression = []
+    # Générer les 4 semaines
     for i in range(4):
-        week_start = start_period + timedelta(weeks=i)
+        week_start = start_week + timedelta(weeks=i)
         week_end = week_start + timedelta(days=6)
         week_workouts = workouts.filter(workout_date__range=[week_start, week_end])
-        progression.append({
-            "week": week_start.strftime("%d %b"),
-            "sessions": week_workouts.count(),
-            "minutes": week_workouts.aggregate(total=Sum('duration_minutes'))['total'] or 0
-        })
-
+        
+        labels.append(week_start.strftime("%d %b"))
+        session_counts.append(week_workouts.count())
+        durations.append(week_workouts.aggregate(total=Sum('duration_minutes'))['total'] or 0)
+        
+        # Charge totale (réps x poids)
+        sets = ProgramWorkoutSet.objects.filter(workout__in=week_workouts)
+        charge = sum((s.reps * (s.weight_kg or 0)) for s in sets)
+        total_weight.append(float(charge))  # <-- conversion en float pour JS
+    
+    # Stats hebdomadaires pour la semaine en cours
+    current_week_start = today - timedelta(days=today.weekday())
+    weekly_summary = workouts.filter(workout_date__gte=current_week_start)\
+        .aggregate(
+            nb_sessions=Count('id'),
+            total_minutes=Sum('duration_minutes')
+        )
+    
+    # S'assurer que les valeurs nulles sont au moins 0
+    weekly_summary['nb_sessions'] = weekly_summary['nb_sessions'] or 0
+    weekly_summary['total_minutes'] = weekly_summary['total_minutes'] or 0
+    
+    # DEBUG : afficher les données côté serveur
+    print("Labels :", labels)
+    print("Sessions :", session_counts)
+    print("Durées :", durations)
+    print("Charge :", total_weight)
+    
     return render(request, "suivi/dashboard.html", {
         "weekly_summary": weekly_summary,
-        "progression": progression
+        "labels": labels,
+        "session_counts": session_counts,
+        "durations": durations,
+        "total_weight": total_weight
     })
-
-
 # ==========================================
 # WORKOUT JOURNAL
 # ==========================================
@@ -126,6 +149,8 @@ def progression(request):
         "durations": durations,
         "total_weight": total_weight,
     })
+
+
 # ==========================================
 # BADGES
 # ==========================================
