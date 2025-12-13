@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% block title %}Progression{% endblock %}
-
 {% block content %}
 
 <div class="container mt-4">
@@ -12,12 +10,21 @@
 
             {% if labels %}
                 <p class="text-muted">
-                    Analyse des dernières semaines : nombre de séances, durée totale et charge totale.
+                    Analyse des dernières semaines : nombre de séances et durée totale.
                 </p>
 
                 <div class="mt-4">
                     <canvas id="progressChart" height="120"></canvas>
                 </div>
+
+                <!-- Stockage des données JSON pour JS -->
+                <script type="application/json" id="chart-data">
+                    {
+                        "labels": {{ labels|safe }},
+                        "sessions": {{ session_counts|safe }},
+                        "durations": {{ durations|safe }}
+                    }
+                </script>
 
             {% else %}
                 <div class="alert alert-info text-center mb-0">
@@ -33,40 +40,24 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Récupération des données depuis Django
-    const chartLabels = {{ labels|safe }};
-    const sessionCounts = {{ session_counts|safe }};
-    const durations = {{ durations|safe }};
-    const totalWeight = {{ total_weight|safe }};  // nouvelle variable à ajouter dans views.py
-
+    // Récupération des données JSON côté JS
+    const chartData = JSON.parse(document.getElementById('chart-data').textContent);
     const ctx = document.getElementById('progressChart');
 
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: chartLabels,
+            labels: chartData.labels,
             datasets: [
                 {
                     label: 'Séances',
-                    data: sessionCounts,
-                    borderColor: 'rgba(54, 162, 235, 0.8)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    data: chartData.sessions,
                     borderWidth: 2,
                     tension: 0.3
                 },
                 {
                     label: 'Durée totale (min)',
-                    data: durations,
-                    borderColor: 'rgba(255, 206, 86, 0.8)',
-                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                    borderWidth: 2,
-                    tension: 0.3
-                },
-                {
-                    label: 'Charge totale (kg)',
-                    data: totalWeight,
-                    borderColor: 'rgba(75, 192, 192, 0.8)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    data: chartData.durations,
                     borderWidth: 2,
                     tension: 0.3
                 }
@@ -75,8 +66,7 @@
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                tooltip: { mode: 'index', intersect: false }
+                legend: { position: 'top' }
             },
             scales: {
                 y: { beginAtZero: true }

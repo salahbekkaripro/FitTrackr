@@ -1,97 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
-
-{% block page_header %}
-<section class="page-hero">
-    <p class="eyebrow">Tableau de bord</p>
-    <h1 class="page-title">Mes entraînements</h1>
-    <p class="lead">Visualise tes séances, ta progression et la charge de travail.</p>
-</section>
-{% endblock %}
-
 {% block content %}
+<h1>Tableau de bord</h1>
 
-<div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
-    <!-- Statistiques hebdo -->
-    <div class="card" style="padding:16px; flex:1; min-width:200px; background:#0d1b2a; color:white;">
-        <h3>Sessions cette semaine</h3>
-        <p style="font-size:24px; font-weight:700;">{{ weekly_summary.nb_sessions|default:0 }}</p>
-    </div>
-    <div class="card" style="padding:16px; flex:1; min-width:200px; background:#0d1b2a; color:white;">
-        <h3>Durée totale (min)</h3>
-        <p style="font-size:24px; font-weight:700;">{{ weekly_summary.total_minutes|default:0 }}</p>
-    </div>
-</div>
+<h2>Résumé de la semaine</h2>
+<p>Nombre de séances : {{ weekly_summary.nb_sessions|default:"0" }}</p>
+<p>Temps total : {{ weekly_summary.total_minutes|default:"0" }} minutes</p>
 
-<!-- Graphique progression -->
-<div class="card" style="padding:16px; background:#0d1b2a; color:white; margin-bottom:20px;">
-    <h3>Progression sur 4 semaines</h3>
-    <canvas id="progressChart" style="height:250px;"></canvas>
-</div>
+<h2>Progression sur 4 semaines</h2>
+<ul>
+    {% for week in progression %}
+        <li>
+            Semaine du {{ week.week }} :
+            {{ week.sessions }} séance(s) – {{ week.minutes }} min
+        </li>
+    {% endfor %}
+</ul>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('progressChart').getContext('2d');
-const progressChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: JSON.parse('{{ labels|safe|escapejs }}'),
-        datasets: [
-            {
-                label: 'Séances',
-                data: JSON.parse('{{ session_counts|safe|escapejs }}'),
-                backgroundColor: 'rgba(29, 161, 242, 0.7)',
-                yAxisID: 'y1'
-            },
-            {
-                label: 'Durée (min)',
-                data: JSON.parse('{{ durations|safe|escapejs }}'),
-                backgroundColor: 'rgba(72, 219, 251, 0.7)',
-                yAxisID: 'y1'
-            },
-            {
-                label: 'Charge totale (kg x reps)',
-                data: JSON.parse('{{ total_weight|safe|escapejs }}'),
-                type: 'line',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                fill: true,
-                yAxisID: 'y2'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        interaction: {
-            mode: 'index',
-            intersect: false
-        },
-        scales: {
-            y1: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Séances / Durée (min)'
-                },
-                beginAtZero: true
-            },
-            y2: {
-                type: 'linear',
-                position: 'right',
-                title: {
-                    display: true,
-                    text: 'Charge totale (kg x reps)'
-                },
-                beginAtZero: true,
-                grid: {
-                    drawOnChartArea: false
-                }
-            }
-        }
-    }
-});
-</script>
-
+<a href="{% url 'workout_journal' %}">Voir le journal</a>
 {% endblock %}
