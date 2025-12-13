@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ program.name }}{% endblock %}
+
+{% block page_header %}
+<section class="page-hero">
+    <p class="eyebrow">Programme</p>
+    <h1 class="page-title">{{ program.name }}</h1>
+    <p class="lead">{{ program.description|default:"Aucune description disponible." }}</p>
+
+    <!-- 🔥 Boutons Actions -->
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <a href="{% url 'add_exercise_to_program' program.id %}" class="btn primary">Ajouter un exercice</a>
+        <a href="{% url 'edit_program' program.id %}" class="btn secondary">Modifier</a>
+        <a href="{% url 'delete_program' program.id %}" class="btn danger">Supprimer</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div style="display:grid; gap:20px;">
+    {% if exercises %}
+        {% regroup exercises by day_index as exercises_by_day %}
+
+        {% for day in exercises_by_day %}
+        <div class="card soft" style="padding:16px; background:#0d1b2a; color:white;">
+            <h3 style="margin-bottom:12px;">Jour {{ day.grouper }}</h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                {% for exercise in day.list %}
+                <div class="card" style="padding:12px; background:#1b2a38;">
+                    <h4 style="margin:0 0 6px 0; font-weight:600;">{{ exercise.exercise.name }}</h4>
+                    <p class="muted" style="color:#cdd6f4;">Muscle : {{ exercise.exercise.primary_muscle }}</p>
+                    <p class="muted" style="color:#cdd6f4;">
+                        Sets : {{ exercise.target_sets }} | Reps : {{ exercise.target_reps }}
+                        {% if exercise.target_weight_kg %}| Poids : {{ exercise.target_weight_kg }} kg {% endif %}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">Aucun exercice ajouté à ce programme pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

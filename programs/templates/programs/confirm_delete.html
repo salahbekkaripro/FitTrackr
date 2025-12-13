@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer le programme{% endblock %}
+
+{% block content %}
+<div class="card soft">
+    <h2>Supprimer le programme</h2>
+    <p>Es-tu sûre de vouloir supprimer le programme <strong>{{ program.name }}</strong> ?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button class="btn danger" type="submit">Oui, supprimer</button>
+        <a class="btn ghost" href="{% url 'program_list' %}">Annuler</a>
+    </form>
+</div>
+{% endblock %}
