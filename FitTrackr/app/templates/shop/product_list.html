@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block page_header %}
-<section class="page-hero">
+<section class="page-hero hero-with-bg"
+         style="background-image: linear-gradient(145deg, rgba(11, 22, 32, 0.55), rgba(17, 36, 47, 0.78)), url('{% static 'image/hero_shop.png' %}');">
     <p class="eyebrow">Boutique</p>
     <h1 class="page-title">Équipe-toi pour tes séances</h1>
     <p class="lead">Accessoires, compléments et tenues sélectionnés pour FitTrackr.</p>
@@ -114,6 +116,26 @@
                     <span class="dot positive"></span>
                     <span>Prêt pour course, rando ou vélo.</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card soft">
+        <div class="card-head">
+            <div>
+                <p class="eyebrow">Ambiance FitTrackr</p>
+                <h2>Coaching & communauté</h2>
+            </div>
+            <span class="pill">Visuels</span>
+        </div>
+        <div class="shop-visuals">
+            <div class="shop-visual-card">
+                <img src="{% static 'image/coach_portrait.png' %}" alt="Coach FitTrackr en action">
+                <span class="shop-visual-label">Coaching</span>
+            </div>
+            <div class="shop-visual-card">
+                <img src="{% static 'image/community_square.png' %}" alt="Communauté FitTrackr">
+                <span class="shop-visual-label">Communauté</span>
             </div>
         </div>
     </div>

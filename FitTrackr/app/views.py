@@ -866,17 +866,33 @@ def dashboard(request):
     )
 
     progression = []
+    labels = []
+    session_counts = []
+    durations = []
+    total_weight = []
+
     for i in range(4):
         week_start = start_period + timedelta(weeks=i)
         week_end = week_start + timedelta(days=6)
         week_workouts = workouts.filter(workout_date__range=[week_start, week_end])
+
+        sessions = week_workouts.count()
+        minutes = week_workouts.aggregate(total=Sum("duration_minutes"))["total"] or 0
         progression.append(
             {
                 "week": week_start.strftime("%d %b"),
-                "sessions": week_workouts.count(),
-                "minutes": week_workouts.aggregate(total=Sum("duration_minutes"))["total"] or 0,
+                "sessions": sessions,
+                "minutes": minutes,
             }
         )
+
+        labels.append(week_start.strftime("%d %b"))
+        session_counts.append(sessions)
+        durations.append(minutes)
+
+        sets = WorkoutSet.objects.filter(workout__in=week_workouts)
+        charge = sum((s.reps * (s.weight_kg or 0)) for s in sets)
+        total_weight.append(charge)
 
     return render(
         request,
@@ -884,6 +900,10 @@ def dashboard(request):
         {
             "weekly_summary": weekly_summary,
             "progression": progression,
+            "labels": labels,
+            "session_counts": session_counts,
+            "durations": durations,
+            "total_weight": total_weight,
         },
     )
 

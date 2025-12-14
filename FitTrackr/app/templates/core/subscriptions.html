@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}FitTrackR · Abonnements{% endblock %}
 
 {% block page_header %}
-<section class="page-hero onboarding-hero">
+<section class="page-hero onboarding-hero hero-with-bg"
+         style="background-image: linear-gradient(145deg, rgba(11, 22, 32, 0.55), rgba(17, 36, 47, 0.78)), url('{% static 'image/bann_abonnements.png' %}');">
   <p class="eyebrow">Abonnements</p>
   <h1 class="page-title">Choisis l'offre qui te convient</h1>
   <p class="lead">Garde la main sur ton engagement : si une période est en cours, on te bloque le changement et on te le dit clairement.</p>

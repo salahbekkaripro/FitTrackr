@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Programmes{% endblock %}
 
 {% block page_header %}
-<section class="page-hero">
+<section class="page-hero hero-with-bg"
+         style="background-image: linear-gradient(145deg, rgba(11, 22, 32, 0.55), rgba(17, 36, 47, 0.78)), url('{% static 'image/bann_programmes.png' %}');">
     <p class="eyebrow">Programmes</p>
     <h1 class="page-title">Mes programmes</h1>
     <p class="lead">Crée et organise tes programmes d’entraînement personnalisés.</p>
