@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}FitTrackR · Suivi et progression fitness{% endblock %}
+
+{% block page_header %}
+<section class="page-hero home-hero">
+    <p class="eyebrow">FitTrackR</p>
+    <h1 class="page-title">Ton copilote pour tes programmes et ton suivi</h1>
+    <p class="lead">Crée tes programmes, planifie tes séances, logge tes sets/RPE et visualise ta progression sur 4 semaines.</p>
+    <div class="hero-actions">
+        {% if user.is_authenticated %}
+        <a href="{% url 'program_list' %}" class="btn primary">Voir mes programmes</a>
+        <a href="{% url 'workout_list' %}" class="btn ghost">Planifier une séance</a>
+        {% else %}
+        <a href="{% url 'signup' %}" class="btn primary">Créer un compte</a>
+        <a href="{% url 'connexion' %}" class="btn ghost">Se connecter</a>
+        {% endif %}
+    </div>
+    {% if user.is_authenticated %}
+    <div class="hero-glance">
+        <span class="hero-chip"><span class="dot neutral"></span>{% if subscription %}{{ subscription.name }}{% else %}Sans abonnement{% endif %}</span>
+        <span class="hero-chip"><span class="dot positive"></span>Séances cette semaine : {{ weekly_summary.nb_sessions|default:"0" }}</span>
+        <span class="hero-chip"><span class="dot neutral"></span>{% if next_workout %}Prochaine séance {{ next_workout.workout_date }}{% else %}Planifie ta prochaine séance{% endif %}</span>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card" id="fittrackr-apercu">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Pourquoi l'utiliser</p>
+            <h2>Une vue claire de tes séances et de ta progression</h2>
+        </div>
+        <span class="pill">Données réelles</span>
+    </div>
+    <p class="muted">Tout ce que tu utilises déjà : programmes, séances planifiées, journal, export CSV, badges et tableau de bord 4 semaines.</p>
+
+    {% if user.is_authenticated %}
+    <div class="stat-grid">
+        <div class="stat">
+            <div class="stat-label">Séances cette semaine</div>
+            <div class="stat-value">{{ weekly_summary.nb_sessions|default:"0" }}</div>
+            <div class="stat-trend up">Planifiées ou réalisées</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Durée totale</div>
+            <div class="stat-value">{{ weekly_summary.total_minutes|default:"0" }} min</div>
+            <div class="stat-trend up">Sur les 7 derniers jours</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Programmes</div>
+            <div class="stat-value">{{ program_count|default:"0" }}</div>
+            <div class="stat-trend neutral">Créés par toi</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>Planification des séances</h4>
+            <p class="muted">Ajoute, modifie ou supprime tes entraînements depuis la vue Séances.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Vue à venir et passées</span></li>
+                <li><span class="check-dot"></span><span>Liées à tes programmes</span></li>
+                <li><span class="check-dot"></span><span>Durée, notes et détails enregistrés</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Tableaux de bord</h4>
+            <p class="muted">Visualise tes séances, durées et charge totale sur 4 semaines.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Tendance hebdo</span></li>
+                <li><span class="check-dot"></span><span>Séances et durée</span></li>
+                <li><span class="check-dot"></span><span>Export CSV du journal</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Badges & motivation</h4>
+            <p class="muted">Régularité et Volume : les badges existants que tu peux déjà débloquer.</p>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Suivi de régularité</span></li>
+                <li><span class="check-dot"></span><span>Volume cumulé sur 4 semaines</span></li>
+                <li><span class="check-dot"></span><span>Affiché dans l’espace Badges</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card" id="bloc-semaine">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Bloc en cours</p>
+            <h3>{% if current_program %}{{ current_program.name }}{% else %}Configure ton programme{% endif %}</h3>
+        </div>
+        <span class="pill">Programmes & séances</span>
+    </div>
+    <div class="split-grid">
+        <div class="split-panel">
+            {% if user.is_authenticated %}
+                {% if current_program %}
+                    {% if current_program.description %}<p class="muted">{{ current_program.description }}</p>{% endif %}
+                {% else %}
+                    <p class="muted">Pas encore de programme associé. Crée ton premier programme pour planifier tes séances.</p>
+                {% endif %}
+                <div class="timeline">
+                    {% for workout in upcoming_workouts %}
+                    <div class="timeline-item">
+                        <div class="timeline-day">{{ workout.workout_date|date:"D" }}</div>
+                        <div>
+                            <div class="timeline-title">{{ workout.title }}</div>
+                            <p class="timeline-meta">
+                                {% if workout.program %}{{ workout.program.name }} · {% endif %}
+                                {% if workout.duration_minutes %}{{ workout.duration_minutes }} min{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="muted">Aucune séance à venir. Planifie ta prochaine séance.</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="muted">Connecte-toi pour voir tes programmes et tes séances planifiées.</p>
+            {% endif %}
+        </div>
+        <div class="split-panel">
+            <h4>Suivi & journal</h4>
+            <p class="muted">Retrouve les mêmes données que dans le dashboard et le journal.</p>
+            {% if user.is_authenticated %}
+                <div class="stat-grid">
+                    <div class="stat">
+                        <div class="stat-label">Séances / 4 semaines</div>
+                        <div class="stat-value">{{ weekly_summary.nb_sessions|default:"0" }}</div>
+                        <div class="stat-trend up">Tirées de ton journal</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Durée cumulée</div>
+                        <div class="stat-value">{{ weekly_summary.total_minutes|default:"0" }} min</div>
+                        <div class="stat-trend up">Derniers 7 jours</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Abonnement</div>
+                        <div class="stat-value">{% if subscription %}{{ subscription.name }}{% else %}Libre{% endif %}</div>
+                        <div class="stat-trend neutral">Gestion depuis Abonnements</div>
+                    </div>
+                </div>
+                <div class="badge-row">
+                    {% for user_badge in user_badges %}
+                    <div class="badge-card">
+                        <strong>{{ user_badge.badge.name }}</strong>
+                        <span class="muted">{{ user_badge.badge.description|default:"Badge débloqué" }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="badge-card">
+                        <strong>Régularité</strong>
+                        <span class="muted">Commence tes séances pour débloquer le badge</span>
+                    </div>
+                    <div class="badge-card">
+                        <strong>Volume</strong>
+                        <span class="muted">Cumul sur 4 semaines</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="muted">Connecte-toi pour voir tes stats et tes badges.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card soft">
+    <div class="card-head">
+        <div>
+            <p class="eyebrow">Journal & export</p>
+            <h3>Garde une trace complète de tes séances</h3>
+        </div>
+        <span class="pill">CSV dispo</span>
+    </div>
+    <p class="muted">Filtre par programme, ajoute notes et exporte ton journal en CSV pour partager avec ton coach.</p>
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>Journal</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Filtre par programme</span></li>
+                <li><span class="check-dot"></span><span>Durée et notes conservées</span></li>
+                <li><span class="check-dot"></span><span>Export CSV en un clic</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Programmes</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Force / Hypertrophie / Cardio</span></li>
+                <li><span class="check-dot"></span><span>Exercices et cibles intégrés</span></li>
+                <li><span class="check-dot"></span><span>Associe-les à tes séances</span></li>
+            </ul>
+        </div>
+        <div class="feature">
+            <h4>Suivi badge</h4>
+            <ul class="checklist">
+                <li><span class="check-dot"></span><span>Régularité active</span></li>
+                <li><span class="check-dot"></span><span>Volume cumulé</span></li>
+                <li><span class="check-dot"></span><span>Visible dans l'onglet Badges</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="card soft">
+    <h3>Prêt à démarrer ?</h3>
+    {% if user.is_authenticated %}
+        {% if not user.age or not user.weight or not user.size %}
+            <p class="muted">Complète ton profil pour personnaliser ton suivi.</p>
+            <a href="{% url 'onboarding' %}" class="btn full primary" style="margin-top: 14px;">Compléter mon profil</a>
+        {% else %}
+            <p class="muted">Crée un programme ou planifie une séance dès maintenant.</p>
+            <a href="{% url 'create_program' %}" class="btn full primary" style="margin-top: 14px;">Créer un programme</a>
+            <a href="{% url 'create_workout' %}" class="btn full ghost" style="margin-top: 8px;">Planifier une séance</a>
+        {% endif %}
+    {% else %}
+        <p class="muted">Crée un compte pour accéder à tes programmes et ton suivi.</p>
+        <a href="{% url 'signup' %}" class="btn full primary" style="margin-top: 14px;">Créer mon compte</a>
+        <a href="{% url 'connexion' %}" class="btn full ghost" style="margin-top: 8px;">Se connecter</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Focus de la semaine</h3>
+    {% if user.is_authenticated %}
+        {% if next_workout %}
+            <div class="stat-grid">
+                <div class="stat">
+                    <div class="stat-label">Prochaine séance</div>
+                    <div class="stat-value">{{ next_workout.title }}</div>
+                    <div class="stat-trend neutral">{{ next_workout.workout_date }}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Programme</div>
+                    <div class="stat-value">{% if next_workout.program %}{{ next_workout.program.name }}{% else %}Libre{% endif %}</div>
+                    <div class="stat-trend up">{% if next_workout.duration_minutes %}{{ next_workout.duration_minutes }} min{% else %}Durée libre{% endif %}</div>
+                </div>
+            </div>
+        {% else %}
+            <p class="muted">Planifie une séance pour la semaine.</p>
+        {% endif %}
+        <div class="badge-row" style="margin-top: 12px;">
+            {% if user_badges %}
+                {% for user_badge in user_badges|slice:":2" %}
+                <div class="badge-card">
+                    <strong>{{ user_badge.badge.name }}</strong>
+                    <span class="muted">{{ user_badge.badge.description|default:"Badge obtenu" }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="badge-card">
+                    <strong>Régularité</strong>
+                    <span class="muted">Gagne-le avec des séances régulières</span>
+                </div>
+                <div class="badge-card">
+                    <strong>Volume</strong>
+                    <span class="muted">Cumul tes minutes d'entraînement</span>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <p class="muted">Connecte-toi pour voir ton prochain entraînement.</p>
+    {% endif %}
+</div>
+{% endblock %}
