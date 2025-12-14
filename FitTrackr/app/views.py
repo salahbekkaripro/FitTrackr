@@ -898,7 +898,7 @@ def dashboard(request):
             ),
             Decimal("0"),
         )
-        total_weight.append(charge)
+        total_weight.append(float(charge))
 
     return render(
         request,
@@ -992,7 +992,7 @@ def progression(request):
                 ),
                 Decimal("0"),
             )
-            total_weight.append(charge)
+            total_weight.append(float(charge))
 
             current += timedelta(weeks=1)
 
