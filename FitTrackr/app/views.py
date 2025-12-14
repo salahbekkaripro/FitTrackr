@@ -891,7 +891,13 @@ def dashboard(request):
         durations.append(minutes)
 
         sets = WorkoutSet.objects.filter(workout__in=week_workouts)
-        charge = sum((s.reps * (s.weight_kg or 0)) for s in sets)
+        charge = sum(
+            (
+                s.reps * (s.weight_kg or Decimal("0"))
+                for s in sets
+            ),
+            Decimal("0"),
+        )
         total_weight.append(charge)
 
     return render(
@@ -979,7 +985,13 @@ def progression(request):
             durations.append(week_workouts.aggregate(total=Sum("duration_minutes"))["total"] or 0)
 
             sets = WorkoutSet.objects.filter(workout__in=week_workouts)
-            charge = sum((s.reps * (s.weight_kg or 0)) for s in sets)
+            charge = sum(
+                (
+                    s.reps * (s.weight_kg or Decimal("0"))
+                    for s in sets
+                ),
+                Decimal("0"),
+            )
             total_weight.append(charge)
 
             current += timedelta(weeks=1)
