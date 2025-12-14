@@ -11,7 +11,7 @@ services:
     plan: free
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
     postDeployCommand: "python manage.py reset_demo_data"
-    startCommand: "gunicorn FitTrackr.wsgi:application"
+    startCommand: "python manage.py collectstatic --noinput && gunicorn FitTrackr.wsgi:application"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
