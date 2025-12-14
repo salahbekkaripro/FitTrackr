@@ -979,11 +979,11 @@
     "model": "app.product",
     "pk": 1,
     "fields": {
-      "name": "Ceinture de powerlifting",
-      "description": "Cuir 10 mm, soutien lombaire pour les charges lourdes.",
-      "price": "59.90",
-      "image": "",
-      "stock": 10,
+      "name": "Paire d’haltères réglables 24kg",
+      "description": "2 x 24 kg ajustables (2-24 kg), verrouillage rapide pour home gym compact.",
+      "price": "179.00",
+      "image": "products/haltere.png",
+      "stock": 25,
       "category": "Équipement"
     }
   },
@@ -991,12 +991,72 @@
     "model": "app.product",
     "pk": 2,
     "fields": {
-      "name": "Shaker 700 ml",
-      "description": "Shaker anti-fuite avec insert mélangeur.",
-      "price": "12.90",
-      "image": "",
+      "name": "Tapis de yoga 6mm",
+      "description": "Adhérence haute densité, 6 mm pour mobilité, stretching et gainage.",
+      "price": "29.90",
+      "image": "products/tapis.png",
+      "stock": 120,
+      "category": "Accessoire"
+    }
+  },
+  {
+    "model": "app.product",
+    "pk": 3,
+    "fields": {
+      "name": "Ceinture de lest cuir",
+      "description": "Cuir 10 mm avec chaîne acier, idéale dips/tractions lestées.",
+      "price": "49.90",
+      "image": "products/ceinture.png",
+      "stock": 60,
+      "category": "Équipement"
+    }
+  },
+  {
+    "model": "app.product",
+    "pk": 4,
+    "fields": {
+      "name": "Whey 2kg chocolat",
+      "description": "80% protéine, goût chocolat, digestion facile pour la récup.",
+      "price": "54.90",
+      "image": "products/whey.png",
+      "stock": 80,
+      "category": "Nutrition"
+    }
+  },
+  {
+    "model": "app.product",
+    "pk": 5,
+    "fields": {
+      "name": "Gourde isotherme 1L",
+      "description": "Inox double paroi, garde au frais 24h, bouchon antifuite.",
+      "price": "19.90",
+      "image": "products/bouteille.png",
       "stock": 200,
       "category": "Accessoire"
+    }
+  },
+  {
+    "model": "app.product",
+    "pk": 6,
+    "fields": {
+      "name": "Set de 5 bandes de résistance",
+      "description": "5 niveaux de tension pour échauffement, mobilité et assistance.",
+      "price": "24.90",
+      "image": "products/elastique.png",
+      "stock": 150,
+      "category": "Équipement"
+    }
+  },
+  {
+    "model": "app.product",
+    "pk": 7,
+    "fields": {
+      "name": "T-shirt FitTrackr",
+      "description": "Coupe athlétique, coton peigné, logo FitTrackr sérigraphié.",
+      "price": "24.90",
+      "image": "products/tshirt_fittrackr.png",
+      "stock": 180,
+      "category": "Textile"
     }
   },
   {
