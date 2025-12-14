@@ -1,0 +1,82 @@
+[
+  {
+    "model": "programs.exercise",
+    "pk": 1,
+    "fields": {
+      "name": "Pompes",
+      "primary_muscle": "Pectoraux"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 2,
+    "fields": {
+      "name": "Tractions",
+      "primary_muscle": "Dos"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 3,
+    "fields": {
+      "name": "Squats",
+      "primary_muscle": "Jambes"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 4,
+    "fields": {
+      "name": "Fentes",
+      "primary_muscle": "Jambes"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 5,
+    "fields": {
+      "name": "Planche",
+      "primary_muscle": "Abdos"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 6,
+    "fields": {
+      "name": "Crunchs",
+      "primary_muscle": "Abdos"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 7,
+    "fields": {
+      "name": "Développé couché",
+      "primary_muscle": "Pectoraux"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 8,
+    "fields": {
+      "name": "Élévations latérales",
+      "primary_muscle": "Épaules"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 9,
+    "fields": {
+      "name": "Curl biceps",
+      "primary_muscle": "Biceps"
+    }
+  },
+  {
+    "model": "programs.exercise",
+    "pk": 10,
+    "fields": {
+      "name": "Extensions triceps",
+      "primary_muscle": "Triceps"
+    }
+  }
+]

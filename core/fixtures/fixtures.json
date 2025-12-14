@@ -1,0 +1,113 @@
+[
+  {
+    "model": "core.subscription",
+    "pk": 1,
+    "fields": {
+      "name": "Premium Plan",
+      "code": "PREM123",
+      "price_monthly": "29.99",
+      "level_rank": 1,
+      "commitment_months": 12
+    }
+  },
+  {
+    "model": "core.subscription",
+    "pk": 2,
+    "fields": {
+      "name": "Standard Plan",
+      "code": "STD123",
+      "price_monthly": "19.99",
+      "level_rank": 2,
+      "commitment_months": 6
+    }
+  },
+  {
+    "model": "core.exercise",
+    "pk": 1,
+    "fields": {
+      "name": "Push-up",
+      "primary_muscle": "Chest",
+      "equipment": "None",
+      "difficulty": "Medium",
+      "description": "A bodyweight exercise for the chest"
+    }
+  },
+  {
+    "model": "core.exercise",
+    "pk": 2,
+    "fields": {
+      "name": "Squat",
+      "primary_muscle": "Legs",
+      "equipment": "Barbell",
+      "difficulty": "High",
+      "description": "A lower-body exercise with weights"
+    }
+  },
+  {
+    "model": "core.user",
+    "pk": 1,
+    "fields": {
+      "username": "john_doe",
+      "email": "john@example.com",
+      "role": "member",
+      "age": 30,
+      "weight": 75,
+      "size": 180,
+      "subscription": 1
+    }
+  },
+  {
+    "model": "core.program",
+    "pk": 1,
+    "fields": {
+      "name": "Fitness Program",
+      "user": 1
+    }
+  },
+  {
+    "model": "core.programexercise",
+    "pk": 1,
+    "fields": {
+      "program": 1,
+      "exercise": 1,
+      "day_index": 1,
+      "order_index": 1,
+      "target_sets": 3,
+      "target_reps": 12,
+      "target_weight_kg": 0
+    }
+  },
+  {
+    "model": "core.programexercise",
+    "pk": 2,
+    "fields": {
+      "program": 1,
+      "exercise": 2,
+      "day_index": 2,
+      "order_index": 1,
+      "target_sets": 4,
+      "target_reps": 10,
+      "target_weight_kg": 40
+    }
+  },
+  {
+    "model": "core.badge",
+    "pk": 1,
+    "fields": {
+      "code": "REGULARITY",
+      "name": "Badge Régularité",
+      "description": "Remis pour un suivi régulier des séances.",
+      "image": "badges/regulier.jpg"
+    }
+  },
+  {
+    "model": "core.badge",
+    "pk": 2,
+    "fields": {
+      "code": "VOLUME",
+      "name": "Badge Volume",
+      "description": "Remis pour avoir atteint un volume d'entraînement élevé.",
+      "image": "badges/superegulier.png"
+    }
+  }
+]

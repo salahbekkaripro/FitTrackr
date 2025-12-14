@@ -5,7 +5,8 @@
 
 <p><strong>Badge Régularité :</strong>
     {% if regularity_badge %}
-        🟢 Obtenu !
+        🟢 Obtenu ! 
+        <img src="{{ regulier.image.url }}" alt="{{ regulier.name }}" width="50" height="50">
     {% else %}
         🔴 Non obtenu
     {% endif %}
@@ -13,7 +14,8 @@
 
 <p><strong>Badge Volume :</strong>
     {% if volume_badge %}
-        🟢 Obtenu !
+        🟢 Obtenu ! 
+        <img src="{{ superegulier.image.url }}" alt="{{ superegulier.name }}" width="50" height="50">
     {% else %}
         🔴 Non obtenu
     {% endif %}
