@@ -46,6 +46,23 @@ from .models import (
 )
 
 
+def _compute_total_weight(sets_queryset):
+    """
+    Safely compute total lifted weight (reps * weight) for a queryset of sets.
+    Any unexpected or malformed values are treated as zero to avoid runtime errors.
+    """
+    total = Decimal("0")
+    for s in sets_queryset:
+        try:
+            reps = Decimal(str(s.reps or 0))
+            weight = Decimal(str(s.weight_kg)) if s.weight_kg is not None else Decimal("0")
+            total += reps * weight
+        except Exception:
+            # Ignore malformed rows rather than failing the entire dashboard.
+            continue
+    return float(total)
+
+
 def _shop_discount_rate(user):
     subscription_code = getattr(getattr(user, "subscription", None), "code", "")
     if subscription_code == "SUPER_POWER":
@@ -891,14 +908,7 @@ def dashboard(request):
         durations.append(minutes)
 
         sets = WorkoutSet.objects.filter(workout__in=week_workouts)
-        charge = sum(
-            (
-                s.reps * (s.weight_kg or Decimal("0"))
-                for s in sets
-            ),
-            Decimal("0"),
-        )
-        total_weight.append(float(charge))
+        total_weight.append(_compute_total_weight(sets))
 
     return render(
         request,
@@ -985,14 +995,7 @@ def progression(request):
             durations.append(week_workouts.aggregate(total=Sum("duration_minutes"))["total"] or 0)
 
             sets = WorkoutSet.objects.filter(workout__in=week_workouts)
-            charge = sum(
-                (
-                    s.reps * (s.weight_kg or Decimal("0"))
-                    for s in sets
-                ),
-                Decimal("0"),
-            )
-            total_weight.append(float(charge))
+            total_weight.append(_compute_total_weight(sets))
 
             current += timedelta(weeks=1)
 
