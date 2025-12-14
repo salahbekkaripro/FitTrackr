@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (label) label.textContent = "Déconnexion...";
     if (overlay) overlay.classList.add("is-visible");
 
-    // Laisse le temps d'afficher l'overlay avant la redirection
+    // Petite latence pour voir l'overlay avant la redirection
     requestAnimationFrame(() => {
       setTimeout(() => form.submit(), 800);
     });

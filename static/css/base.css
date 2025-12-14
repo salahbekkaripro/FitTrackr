@@ -735,7 +735,6 @@ code {
     background: #193646;
 }
 
-/* Force le style des champs même sans classe explicite */
 input[type="text"],
 input[type="email"],
 input[type="number"],
