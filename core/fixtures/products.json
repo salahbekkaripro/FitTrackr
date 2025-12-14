@@ -1,0 +1,26 @@
+[
+  {
+    "model": "shop.product",
+    "pk": 1,
+    "fields": {
+      "name": "T-shirt",
+      "description": "Un T-shirt confortable et stylé.",
+      "price": 19.99,
+      "image": "products/T-shirt.png",
+      "stock": 100,
+      "category": "Vêtements"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 2,
+    "fields": {
+      "name": "T-shirt personnalisé",
+      "description": "T-shirt personnalisé avec un design unique.",
+      "price": 24.99,
+      "image": "products/T-shirt_rUcDwKA.png",
+      "stock": 50,
+      "category": "Vêtements"
+    }
+  }
+]
