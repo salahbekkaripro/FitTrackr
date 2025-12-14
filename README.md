@@ -53,3 +53,14 @@ Le compte `demo_admin` inclut : un abonnement Super Power actif, un programme a
 - `fixtures/demo_data.json` : jeu de données officiel pour tests/démos.
 - `render.yaml` : exemple de configuration Render (PostgreSQL + Django).
 - `static/`, `templates/` : assets et templates HTML/CSS si vous personnalisez le front.
+
+## Déploiement Render (récap)
+1) Créez la base Postgres (plan Free) dans la même région que le service (`fittrackr_db`/`fittrackr_user` ou autres valeurs).  
+2) Copiez l’Internal Connection String de la base et définissez-la en variable d’env `DATABASE_URL`.  
+   Exemple : `postgresql://fittrackr_user:UFsSJPpyDhOgEc1AvXJMuRFFfh2ctyaF@dpg-d4vipt3e5dus73ag79m0-a/fittrackr_mmsg`  
+3) Dans le service web Render :  
+   - `DJANGO_DEBUG=False` (Environment).  
+   - Build Command : `pip install -r requirements.txt && python manage.py collectstatic --noinput`  
+   - Start Command : `python manage.py migrate --noinput && python manage.py loaddata fixtures/demo_data.json && gunicorn FitTrackr.wsgi:application`  
+     (après le premier run, vous pouvez retirer `loaddata` pour éviter les doublons).  
+4) Lancez “Clear build cache & deploy”. Les migrations créent la table `app_user` et le fixture charge les comptes démo.
