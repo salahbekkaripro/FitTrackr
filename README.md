@@ -16,7 +16,8 @@ Plateforme web de suivi d’entraînement avec programmes, journal, boutique et 
 3. Appliquer les migrations :  
    `python manage.py migrate`
 4. Charger la base de démo (indispensable pour tester) :  
-   `python manage.py loaddata fixtures/demo_data.json`
+   `python manage.py loaddata fixtures/demo_data.json`  
+   (ou `python manage.py reset_demo_data` pour forcer un flush avant d’importer la fixture)
 5. Lancer le serveur :  
    `python manage.py runserver` puis ouvrir http://127.0.0.1:8000
    - Si vous avez déjà des données locales, supprimez `db.sqlite3` ou exécutez `python manage.py flush --noinput` avant de recharger la fixture, sinon l’unicité des e-mails bloquera l’import.
@@ -60,7 +61,8 @@ Le compte `demo_admin` inclut : un abonnement Super Power actif, un programme a
    Exemple : `postgresql://fittrackr_user:UFsSJPpyDhOgEc1AvXJMuRFFfh2ctyaF@dpg-d4vipt3e5dus73ag79m0-a/fittrackr_mmsg`  
 3) Dans le service web Render :  
    - `DJANGO_DEBUG=False` (Environment).  
-   - Build Command : `pip install -r requirements.txt && python manage.py collectstatic --noinput`  
-   - Start Command : `python manage.py migrate --noinput && python manage.py loaddata fixtures/demo_data.json && gunicorn FitTrackr.wsgi:application`  
-     (après le premier run, vous pouvez retirer `loaddata` pour éviter les doublons).  
-4) Lancez “Clear build cache & deploy”. Les migrations créent la table `app_user` et le fixture charge les comptes démo.
+   - Build Command : `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput`  
+   - Post Deploy Command : `python manage.py reset_demo_data` (flush + import de la fixture pour éviter les erreurs d’intégrité).  
+   - Start Command : `gunicorn FitTrackr.wsgi:application`  
+     (retirez le Post Deploy Command si vous voulez conserver des données persistantes).  
+4) Lancez “Clear build cache & deploy”. Les migrations créent la table `app_user` et la commande de post-déploiement recharge les comptes démo.
