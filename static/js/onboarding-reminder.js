@@ -1,4 +1,4 @@
-// Affiche un rappel si l'onboarding n'est pas complété.
+// Rappel pour compléter le profil quand l'onboarding n'est pas fini
 (function () {
     const overlay = document.getElementById("onboarding-reminder");
     if (!overlay) return;

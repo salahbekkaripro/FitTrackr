@@ -21,3 +21,10 @@ env/
 
 # Fichiers perso
 arborescence.txt.DS_Store
+.gitignore
+FitTrackr/app/templates/suivi/dashboard.html
+FitTrackr/app/templates/suivi/progression.html
+static/js/chart.js
+static/js/progression.js
+FitTrackr/app/templates/suivi/dashboard.html
+.gitignore

@@ -10,10 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   stack.querySelectorAll(".flash").forEach((flash, index) => {
-    // Trigger a small entrance animation
+    // Animation légère pour éviter l'apparition brutale des toasts
     requestAnimationFrame(() => flash.classList.add("is-visible"));
 
     const closeBtn = flash.querySelector("[data-flash-close]");
+    // Auto-fermeture progressive pour ne pas saturer l'écran
     const timeout = 4200 + index * 120;
     const timer = setTimeout(() => dismiss(flash), timeout);
 

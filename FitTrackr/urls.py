@@ -16,8 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth import views as auth_views
-from core import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,20 +23,8 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('signup/', views.signup_view, name='signup'),
-    path('login/', views.connexion, name='connexion'),
-    path('logout/', views.logout_view, name='logout'),
-    path('onboarding/', views.onboarding, name='onboarding'),
-    path('subscriptions/', views.subscriptions_view, name='subscriptions'),
-    path('profile/', views.profile_view, name='profile'),
-    path('shop/', include('shop.urls')),
-    path('suivi/', include('suivi.urls')),
-    path('programs/', include('programs.urls')),
-    path('admin/users/', views.admin_users_list, name='admin_users_list'),
-    path('admin/users/<int:user_id>/edit/', views.admin_user_edit, name='admin_user_edit'),
+    path('', include('FitTrackr.app.urls')),
     path('admin/', admin.site.urls),
-    path('', include('programs.urls')), 
 ]
 
 # Serve media files

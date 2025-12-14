@@ -16,17 +16,16 @@
 <body data-onboarding-incomplete="{% if user.is_authenticated and not request.session.onboarding_completed %}1{% else %}0{% endif %}">
     <div class="layout">
         <header class="site-header">
-            <div class="brand">
+            <a class="brand" href="{% url 'home' %}">
                 <span class="brand-mark">FT</span>
                 <div>
                     <div class="brand-name">FitTrackr</div>
                     <div class="brand-tag">Suivi d'entraînement</div>
                 </div>
-            </div>
+            </a>
 
             <nav class="nav-links">
                 {% block nav %}
-                <!-- Menu Boutique déroulant -->
                 <div class="nav-item nav-dropdown" data-dropdown>
                     <button class="link nav-trigger" type="button" data-dropdown-trigger>
                         Boutique
@@ -39,7 +38,6 @@
                     </div>
                 </div>
 
-                <!-- Liens principaux -->
                 <a href="{% url 'subscriptions' %}" class="link">Abonnement</a>
                 <a href="{% url 'dashboard' %}" class="link">Suivi</a>
                 <a href="{% url 'program_list' %}" class="link">Programmes</a>
@@ -47,7 +45,6 @@
                 <a href="{% url 'workout_list' %}" class="link">Séances</a>
                 <a href="{% url 'profile' %}" class="link">Profil</a>
 
-                <!-- Lien admin si utilisateur admin -->
                 {% if user.is_authenticated and user.is_admin_role %}
                     <a href="{% url 'admin_users_list' %}" class="link">Admin</a>
                 {% endif %}
@@ -71,17 +68,7 @@
         </header>
 
         <main class="page">
-            {% block page_header %}
-            <section class="page-hero">
-                <p class="eyebrow">Prêt à bouger</p>
-                <h1 class="page-title">Un socle commun pour l'équipe</h1>
-                <p class="lead">Utilisez ce layout comme base : sections, cartes, boutons et grilles sont déjà prêts.</p>
-                <div class="hero-actions">
-                    <button class="btn primary">Action principale</button>
-                    <button class="btn ghost">Action secondaire</button>
-                </div>
-            </section>
-            {% endblock %}
+            {% block page_header %}{% endblock %}
 
             <section class="page-grid">
                 <div class="content">
@@ -89,13 +76,7 @@
                 </div>
 
                 <aside class="sidebar">
-                    {% block sidebar %}
-                    <div class="card soft">
-                        <h3>Bloc latéral</h3>
-                        <p class="muted">Utilisez le <code>sidebar</code> pour des raccourcis, des filtres ou un résumé.</p>
-                        <button class="btn full ghost">Bouton latéral</button>
-                    </div>
-                    {% endblock %}
+                    {% block sidebar %}{% endblock %}
                 </aside>
             </section>
         </main>
@@ -105,7 +86,6 @@
         </footer>
     </div>
 
-    <!-- Déconnexion overlay -->
     <div class="logout-overlay" aria-hidden="true">
         <div class="panel">
             <div class="big-spinner"></div>
@@ -114,7 +94,7 @@
         </div>
     </div>
 
-    <!-- Onboarding overlay -->
+    <!-- Rappel onboarding affiché tant que le profil n'est pas complété -->
     <div class="onboarding-overlay" id="onboarding-reminder" aria-hidden="true">
         <div class="panel">
             <button type="button" class="close-btn" data-onboarding-close aria-label="Fermer">×</button>
@@ -128,7 +108,6 @@
         </div>
     </div>
 
-    <!-- Messages flash -->
     {% if messages %}
     <div class="flash-stack" data-flash-stack>
         {% for message in messages %}
