@@ -27,6 +27,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-# Serve media files
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files (needed on Render where DEBUG=False)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
