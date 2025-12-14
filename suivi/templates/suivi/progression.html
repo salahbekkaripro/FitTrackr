@@ -14,7 +14,7 @@
 
             {% if labels %}
                 <p class="text-muted">
-                    Analyse des dernières semaines : nombre de séances, durée totale et charge totale.
+                    Analyse des dernières semaines : nombre de séances et durée totale.
                 </p>
 
                 <!-- Données Django → JSON -->
@@ -26,6 +26,15 @@
                 <div class="mt-4">
                     <canvas id="progressChart" height="120"></canvas>
                 </div>
+
+                <!-- Stockage des données JSON pour JS -->
+                <script type="application/json" id="chart-data">
+                    {
+                        "labels": {{ labels|safe }},
+                        "sessions": {{ session_counts|safe }},
+                        "durations": {{ durations|safe }}
+                    }
+                </script>
 
             {% else %}
                 <div class="alert alert-info text-center mb-0">
