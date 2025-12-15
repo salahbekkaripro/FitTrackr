@@ -44,6 +44,10 @@ from .models import (
     Workout,
     WorkoutSet,
 )
+from types import SimpleNamespace
+from django.templatetags.static import static
+from django.conf import settings
+import os
 
 
 def _compute_total_weight(sets_queryset):
@@ -910,6 +914,37 @@ def dashboard(request):
         sets = WorkoutSet.objects.filter(workout__in=week_workouts)
         total_weight.append(_compute_total_weight(sets))
 
+    # --- Badges summary (pour affichage dans le dashboard) ---
+    weekly_counts = [p.get("sessions", 0) for p in progression]
+    regularity_badge = all(count >= 3 for count in weekly_counts)
+    total_minutes = sum(p.get("minutes", 0) for p in progression)
+    volume_badge = total_minutes >= 5 * 60
+
+    # Prioritise media/badges files if present
+    media_badges_dir = os.path.join(settings.MEDIA_ROOT, "badges")
+    media_badges_url = (settings.MEDIA_URL or "/media/").rstrip('/') + '/badges/'
+
+    def _find_media_badge(prefix: str):
+        if not os.path.isdir(media_badges_dir):
+            return None
+        for fn in os.listdir(media_badges_dir):
+            if fn.lower().startswith(prefix.lower()):
+                return media_badges_url + fn
+        return None
+
+    regulier_media = _find_media_badge('regulier')
+    superegulier_media = _find_media_badge('superegulier')
+
+    if regulier_media:
+        regulier = SimpleNamespace(name="Régularité", image=SimpleNamespace(url=regulier_media))
+    else:
+        regulier = SimpleNamespace(name="Régularité", image=SimpleNamespace(url=static("image/profil.jpg")))
+
+    if superegulier_media:
+        superegulier = SimpleNamespace(name="Volume", image=SimpleNamespace(url=superegulier_media))
+    else:
+        superegulier = SimpleNamespace(name="Volume", image=SimpleNamespace(url=static("image/profil.jpg")))
+
     return render(
         request,
         "suivi/dashboard.html",
@@ -920,6 +955,11 @@ def dashboard(request):
             "session_counts": session_counts,
             "durations": durations,
             "total_weight": total_weight,
+            "regularity_badge": regularity_badge,
+            "volume_badge": volume_badge,
+            "total_minutes": total_minutes,
+            "regulier": regulier,
+            "superegulier": superegulier,
         },
     )
 
@@ -1032,6 +1072,56 @@ def user_badges(request):
     total_minutes = recent_workouts.aggregate(total=Sum("duration_minutes"))["total"] or 0
     volume_badge = total_minutes >= 5 * 60
 
+    # Construire des objets de repli pour l'affichage d'images
+    regulier = None
+    superegulier = None
+    try:
+        regulier_badge = Badge.objects.filter(code__icontains="regular").first()
+        if regulier_badge:
+            regulier = regulier_badge
+    except Exception:
+        regulier = None
+
+    try:
+        volume_badge_obj = Badge.objects.filter(code__icontains="volume").first()
+        if volume_badge_obj:
+            superegulier = volume_badge_obj
+    except Exception:
+        superegulier = None
+
+    # Priorité : images déposées dans MEDIA_ROOT/badges/ (fichiers nommés 'regulier*' / 'superegulier*')
+    media_badges_dir = os.path.join(settings.MEDIA_ROOT, "badges")
+    media_badges_url = (settings.MEDIA_URL or "/media/").rstrip('/') + '/badges/'
+
+    # helper to find file in media badges
+    def _find_media_badge(prefix: str):
+        if not os.path.isdir(media_badges_dir):
+            return None
+        for fn in os.listdir(media_badges_dir):
+            if fn.lower().startswith(prefix.lower()):
+                return media_badges_url + fn
+        return None
+
+    regulier_media = _find_media_badge('regulier')
+    superegulier_media = _find_media_badge('superegulier')
+
+    if regulier_media:
+        regulier = SimpleNamespace(name="Régularité", image=SimpleNamespace(url=regulier_media))
+    else:
+        if regulier and hasattr(regulier, 'image') and getattr(regulier.image, 'url', None):
+            # keep DB-provided image
+            pass
+        else:
+            regulier = SimpleNamespace(name="Régularité", image=SimpleNamespace(url=static("image/profil.jpg")))
+
+    if superegulier_media:
+        superegulier = SimpleNamespace(name="Volume", image=SimpleNamespace(url=superegulier_media))
+    else:
+        if superegulier and hasattr(superegulier, 'image') and getattr(superegulier.image, 'url', None):
+            pass
+        else:
+            superegulier = SimpleNamespace(name="Volume", image=SimpleNamespace(url=static("image/profil.jpg")))
+
     return render(
         request,
         "suivi/badges.html",
@@ -1039,5 +1129,7 @@ def user_badges(request):
             "regularity_badge": regularity_badge,
             "volume_badge": volume_badge,
             "total_minutes": total_minutes,
+            "regulier": regulier,
+            "superegulier": superegulier,
         },
     )
