@@ -4,10 +4,10 @@ __pycache__/
 
 # SQLite database
 db.sqlite3
+*.sqlite3
 
 # Django migrations cache
 */migrations/__pycache__/
-*.sqlite3
 
 # VSCode
 .vscode/
@@ -20,11 +20,4 @@ env/
 .DS_Store
 
 # Fichiers perso
-arborescence.txt.DS_Store
-.gitignore
-FitTrackr/app/templates/suivi/dashboard.html
-FitTrackr/app/templates/suivi/progression.html
-static/js/chart.js
-static/js/progression.js
-FitTrackr/app/templates/suivi/dashboard.html
-.gitignore
+arborescence.txt
