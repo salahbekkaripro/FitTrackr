@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block page_header %}
-<section class="page-hero onboarding-hero">
+  <section class="page-hero onboarding-hero hero-with-bg"
+         style="background-image: linear-gradient(145deg, rgba(11, 22, 32, 0.55), rgba(17, 36, 47, 0.78)), url('{% static 'image/bann_profil.png' %}');
+                background-size: cover;
+                background-position: center;">
   <p class="eyebrow">Connexion</p>
   <h1 class="page-title">Content de te revoir</h1>
   <p class="lead">Accède à ton suivi, tes objectifs et tes programmes.</p>
