@@ -21,6 +21,39 @@
     </div>
 </div>
 
+<!-- Badges rapide -->
+<div style="display:flex; gap:16px; align-items:center; margin-bottom:20px;">
+    <div class="card" style="padding:12px; background:#0d1b2a; color:white; display:flex; align-items:center; gap:12px;">
+        <div>
+            <strong>Badge Régularité</strong>
+            <div style="font-size:12px; color:#ccc;">Total minutes : {{ total_minutes|default:0 }}</div>
+        </div>
+        <div>
+            {% if regulier and regulier.image and regulier.image.url %}
+                <img src="{{ regulier.image.url }}" alt="regulier" width="48" height="48" style="{% if not regularity_badge %}filter:grayscale(100%);opacity:0.45;{% endif %}">
+            {% else %}
+                <img src="{% static 'image/profil.jpg' %}" alt="regulier" width="48" height="48" style="filter:grayscale(100%);opacity:0.45;">
+            {% endif %}
+        </div>
+        <div style="margin-left:8px">{% if regularity_badge %}🟢{% else %}🔴{% endif %}</div>
+    </div>
+
+    <div class="card" style="padding:12px; background:#0d1b2a; color:white; display:flex; align-items:center; gap:12px;">
+        <div>
+            <strong>Badge Volume</strong>
+            <div style="font-size:12px; color:#ccc;">Total minutes : {{ total_minutes|default:0 }}</div>
+        </div>
+        <div>
+            {% if superegulier and superegulier.image and superegulier.image.url %}
+                <img src="{{ superegulier.image.url }}" alt="superegulier" width="48" height="48" style="{% if not volume_badge %}filter:grayscale(100%);opacity:0.45;{% endif %}">
+            {% else %}
+                <img src="{% static 'image/profil.jpg' %}" alt="superegulier" width="48" height="48" style="filter:grayscale(100%);opacity:0.45;">
+            {% endif %}
+        </div>
+        <div style="margin-left:8px">{% if volume_badge %}🟢{% else %}🔴{% endif %}</div>
+    </div>
+</div>
+
 <!-- Graphique -->
 <div class="card" style="padding:16px; background:#0d1b2a; color:white; width:100%; max-width:900px;">
     <h3>Progression sur 4 semaines</h3>
