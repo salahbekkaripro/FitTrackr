@@ -37,15 +37,17 @@
 {{ total_weight|json_script:"weight-data" }}
 
 <script>
-    const labels = JSON.parse(document.getElementById('labels-data').textContent);
-    const sessions = JSON.parse(document.getElementById('sessions-data').textContent);
-    const durations = JSON.parse(document.getElementById('durations-data').textContent);
-    const totalWeight = JSON.parse(document.getElementById('weight-data').textContent);
+    // Exposer les données en tant que propriétés de `window`
+    // (les variables `const` ne sont pas accessibles depuis des scripts externes)
+    window.labels = JSON.parse(document.getElementById('labels-data').textContent || '[]');
+    window.sessions = JSON.parse(document.getElementById('sessions-data').textContent || '[]');
+    window.durations = JSON.parse(document.getElementById('durations-data').textContent || '[]');
+    window.totalWeight = JSON.parse(document.getElementById('weight-data').textContent || '[]');
 
-    console.log("Labels :", labels);
-    console.log("Sessions :", sessions);
-    console.log("Durées :", durations);
-    console.log("Charge :", totalWeight);
+    console.log("Labels :", window.labels);
+    console.log("Sessions :", window.sessions);
+    console.log("Durées :", window.durations);
+    console.log("Charge :", window.totalWeight);
 </script>
 
 <!-- Chart.js -->
